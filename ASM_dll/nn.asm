@@ -1,49 +1,34 @@
-;-------------------------------------------------------------------------
-.386
-.MODEL FLAT, STDCALL
-
+;; === nn.asm === ;;
 OPTION CASEMAP:NONE
-;INCLUDE C:\masm32\include\windows.inc
 .CODE
-
 DllEntry PROC hInstDLL:DWORD, reason:DWORD, reserved1:DWORD
-
 mov	eax, 1 	;TRUE
 ret
-
 DllEntry ENDP
 
-;-------------------------------------------------------------------------
-; This is an example function. It's here to show
-; where to put your own functions in the DLL
-;-------------------------------------------------------------------------
+;; === TUTORIAL === ;;
+;; kolejnosc argumentow:
+;;
+;; 1 -- rcx -- *mm0
+;; 2 -- rdx -- *mm1
+;; 3 -- r8  -- *mm2
+;; 4 -- r9  -- *mm3
+;;
+;; lewe, jezeli int, prawe, jezeli float/double
+;; xmm, jezeli 64 bity, ymm, jezeli 128, zmm, jezeli 256
+;; return jest w eax
+;; ================ ;;
 
-MyProc1 proc x: DWORD, y: DWORD
+;; === TU IDA NASZE PROCEDURY === ;
 
-xor	eax,eax
-mov	eax,x
-mov	ecx,y
-ror	ecx,1
-shld	eax,ecx,2
-jnc 	ET1
-mul	y
-ret
-ET1:	
-Mul	x
-Neg	y
+;; na razie to tylko zwraca to, co sie wysyle jako 1. argument
+MyProc1 proc
+
+mov eax, ecx
 ret
 
 MyProc1 endp
 
-MyProc2 proc x: DWORD, y: DWORD
 
-xor	eax,eax
-mov	eax,x
-mov	ecx,y
-add eax, ecx
-ret
-
-MyProc2 endp
-
-END DllEntry
-;-------------------------------------------------------------------------
+END 
+;; === KONIEC nn.asm === ;;

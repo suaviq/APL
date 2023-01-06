@@ -3,27 +3,32 @@
 #include <windows.h>
 #include <iostream>
 
-extern "C" int _stdcall MyProc2(DWORD x, DWORD y);
+extern "C" int _stdcall MyProc1(DWORD x);
 
-typedef int(__stdcall *f_MyProc2)(int, int);
+typedef int(__stdcall *f_MyProc1)(int**);
 
-int main()
-{
-	HINSTANCE hGetProcIDDLL = LoadLibrary(L"D:\\studia\\apl\\neural network\\neural_network\\Debug\\ASM_dll.dll");
+int main() {
+	// PAMIETAJ ZEBY TUTAJ DAC SWOJA SCIEZKE: 
+	// MOZEMY ZROBIC TAK ZE STWORZY SIE PLIK W STYLU sciezki.h
+	// W KTORYM OBAJ WPISZEMY SWOJA SCIEZKE I DA SIE GO DO .gitignore
+	HINSTANCE hGetProcIDDLL = LoadLibrary(L"C:\\Users\\macie\\OneDrive\\Pulpit\\studia\\apl\\APL\\x64\\Debug\\ASM_dll.dll");
 
 	if (!hGetProcIDDLL) {
-		std::cout << "could not load the dynamic library" << std::endl;
+		std::cout << "[ERROR] Could not load the dynamic library\n(Check if the path to the dll is correct)\n";
 		return EXIT_FAILURE;
 	}
 
-	// resolve function address here
-	f_MyProc2 MyProc2 = (f_MyProc2)GetProcAddress(hGetProcIDDLL, "MyProc2");
-	if (!MyProc2) {
-		std::cout << "could not locate the function" << std::endl;
+	f_MyProc1 MyProc1 = (f_MyProc1)GetProcAddress(hGetProcIDDLL, "MyProc1");
+	if (!MyProc1) {
+		std::cout << "[ERROR] Could not locate the function: MyProc1()\n";
 		return EXIT_FAILURE;
 	}
 
-	std::cout << "MyProc2() returned " << MyProc2(2, 3) << std::endl;
+	int* x;
+	// pro tip: jak sie uzyje %x w printf() to pisze liczbe w hex-ie
+	// tutaj sprawdzam czy adres x jest taki sam co return MyProc1()
+	printf("x addr: %x\n", &x);
+	printf("x addr: %x\n", MyProc1(&x));
 
 	return EXIT_SUCCESS;
 }
