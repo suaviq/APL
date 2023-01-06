@@ -25,18 +25,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ASM_dll_test\framework.h">
+    <ClInclude Include="..\ASM_dll\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\ASM_dll_test\pch.h">
+    <ClInclude Include="..\ASM_dll\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ASM_dll_test\dllmain.cpp">
+    <ClCompile Include="..\ASM_dll\dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ASM_dll_test\pch.cpp">
+    <ClCompile Include="..\ASM_dll\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
