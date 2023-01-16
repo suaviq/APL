@@ -23,12 +23,29 @@ DllEntry ENDP
 
 ;; na razie to tylko zwraca to, co sie wysyle jako 1. argument
 MyProc1 proc
-
 mov eax, ecx
 ret
 
 MyProc1 endp
 
+add_vectors proc ; a: QWORD, b: QWORD
+movupd xmm1, [rcx]          ; xmm1 <- A
+movupd xmm2, [rdx]          ; xmm2 <- B
+addpd xmm1, xmm2            ; xmm1 = xmm1 + xmm2
+movupd [rcx], xmm1          ; A <- xmm0 (A + B)
+ret
+add_vectors endp
+
+;vaddpd xmm2, xmm0, xmm1         ; xmm1 = xmm1 + xmm2		;alternative to store result in third vector
+
+substract_vectors proc ; a: QWORD, b: QWORD
+movupd xmm1, [rcx]          ; xmm1 <- A
+movupd xmm2, [rdx]          ; xmm2 <- B
+subpd xmm1, xmm2            ; xmm1 = xmm1 + xmm2
+movupd [rcx], xmm1          ; A <- xmm0 (A + B)
+ret
+substract_vectors endp
 
 END 
+
 ;; === KONIEC nn.asm === ;;
