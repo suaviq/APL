@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <iostream>
 
+#include "paths.h"
+
 /*extern "C" int _stdcall MyProc1(DWORD x);
 
 typedef int(__stdcall *f_MyProc1)(int**);
@@ -16,7 +18,7 @@ int main() {
 	// PAMIETAJ ZEBY TUTAJ DAC SWOJA SCIEZKE: 
 	// MOZEMY ZROBIC TAK ZE STWORZY SIE PLIK W STYLU sciezki.h
 	// W KTORYM OBAJ WPISZEMY SWOJA SCIEZKE I DA SIE GO DO .gitignore
-	HINSTANCE hGetProcIDDLL = LoadLibrary(L"D:\\studia\\apl\\neural network\\neural_network_newest\\APL\\x64\\Debug\\ASM_dll.dll");
+	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
 
 	if (!hGetProcIDDLL) {
 		std::cout << "[ERROR] Could not load the dynamic library\n(Check if the path to the dll is correct)\n";
