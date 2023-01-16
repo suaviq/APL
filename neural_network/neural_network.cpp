@@ -4,51 +4,69 @@
 #include <iostream>
 
 #include "paths.h"
-
-/*extern "C" int _stdcall MyProc1(DWORD x);
-
-typedef int(__stdcall *f_MyProc1)(int**);
-*/
-extern "C" double* _stdcall substract_vectors(DWORDLONG x, DWORDLONG y);
-
-typedef int(__stdcall *f_substract_vectors)(double*, double*);
+#include "asm_functions.h"
 
 
 int main() {
-	// PAMIETAJ ZEBY TUTAJ DAC SWOJA SCIEZKE: 
-	// MOZEMY ZROBIC TAK ZE STWORZY SIE PLIK W STYLU sciezki.h
-	// W KTORYM OBAJ WPISZEMY SWOJA SCIEZKE I DA SIE GO DO .gitignore
 	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
-
 	if (!hGetProcIDDLL) {
 		std::cout << "[ERROR] Could not load the dynamic library\n(Check if the path to the dll is correct)\n";
 		return EXIT_FAILURE;
 	}
 
-	/*f_MyProc1 MyProc1 = (f_MyProc1)GetProcAddress(hGetProcIDDLL, "MyProc1");
-	if (!MyProc1) {
-		std::cout << "[ERROR] Could not locate the function: MyProc1()\n";
+	f_subtract_vectors subtract_vectors = (f_subtract_vectors)GetProcAddress(hGetProcIDDLL, "subtract_vectors");
+	if (!subtract_vectors) {
+		std::cout << "could not locate the function `subtract_vectors`" << std::endl;
+		return EXIT_FAILURE;
+	}
+	f_add_vectors add_vectors = (f_add_vectors)GetProcAddress(hGetProcIDDLL, "add_vectors");
+	if (!add_vectors) {
+		std::cout << "could not locate the function `add_vectors`" << std::endl;
+		return EXIT_FAILURE;
+	}
+	f_add_scalar_to_vector add_scalar_to_vector = (f_add_scalar_to_vector)GetProcAddress(hGetProcIDDLL, "add_scalar_to_vector");
+	if (!add_scalar_to_vector) {
+		std::cout << "could not locate the function `add_scalar_to_vector`" << std::endl;
+		return EXIT_FAILURE;
+	}
+	f_subtract_scalar_from_vector subtract_scalar_from_vector = (f_subtract_scalar_from_vector)GetProcAddress(hGetProcIDDLL, "subtract_scalar_from_vector");
+	if (!subtract_scalar_from_vector) {
+		std::cout << "could not locate the function `subtract_scalar_from_vector`" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	int* x;
-	// pro tip: jak sie uzyje %x w printf() to pisze liczbe w hex-ie
-	// tutaj sprawdzam czy adres x jest taki sam co return MyProc1()
-	printf("x addr: %x\n", &x);
-	printf("x addr: %x\n", MyProc1(&x));
-	*/
-	f_substract_vectors substract_vectors = (f_substract_vectors)GetProcAddress(hGetProcIDDLL, "substract_vectors");
-	if (!substract_vectors) {
-		std::cout << "could not locate the function" << std::endl;
-		return EXIT_FAILURE;
+
+	double *a = new double[4];
+	double *b = new double[4];
+	for (size_t i = 0; i < 4; i += 1) {
+		a[i] = 0.4;
+		b[i] = 0.3;
 	}
-	double *a[4] = { new double(0.3), new double(0.2), new double(0.3), new double(0.4) };// { 0.1, 0.1, 0.1, 0.1 };		//
-	double *b[4] = { new double(0.8), new double(0.4), new double(0.7), new double(0.6) }; //{ 0.1, 0.1, 0.1, 0.1 };		//{ new double(0.1), new double(0.1), new double(0.1), new double(0.1) };
-	std::cout << *a << std::endl << *b << std::endl;
-	substract_vectors(*a, *b);
-	std::cout << "substract_vectors() returned " << *a[0] << std::endl;
 
-
+	for (size_t i = 0; i < 4; i += 1) {
+		printf("%lu: %lf\n", i, a[i]);
+	}
+	std::cout << '\n';
+	subtract_vectors(a, b);
+	for (size_t i = 0; i < 4; i += 1) {
+		printf("%lu: %lf\n", i, a[i]);
+	}
+	std::cout << '\n';
+	add_vectors(a, b);
+	for (size_t i = 0; i < 4; i += 1) {
+		printf("%lu: %lf\n", i, a[i]);
+	}
+	std::cout << '\n';
+	add_scalar_to_vector(a, new double(0.5));
+	for (size_t i = 0; i < 4; i += 1) {
+		printf("%lu: %lf\n", i, a[i]);
+	}
+	std::cout << '\n';
+	subtract_scalar_from_vector(a, new double(0.25));
+	for (size_t i = 0; i < 4; i += 1) {
+		printf("%lu: %lf\n", i, a[i]);
+	}
+	std::cout << '\n';
 
 	return EXIT_SUCCESS;
 }

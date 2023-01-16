@@ -15,37 +15,49 @@ DllEntry ENDP
 ;; 4 -- r9  -- *mm3
 ;;
 ;; lewe, jezeli int, prawe, jezeli float/double
-;; xmm, jezeli 64 bity, ymm, jezeli 128, zmm, jezeli 256
+;; ymm, jezeli 64 bity, ymm, jezeli 128, zmm, jezeli 256
 ;; return jest w eax
 ;; ================ ;;
 
 ;; === TU IDA NASZE PROCEDURY === ;
 
-;; na razie to tylko zwraca to, co sie wysyle jako 1. argument
 MyProc1 proc
 mov eax, ecx
 ret
-
 MyProc1 endp
 
-add_vectors proc ; a: QWORD, b: QWORD
-movupd xmm1, [rcx]          ; xmm1 <- A
-movupd xmm2, [rdx]          ; xmm2 <- B
-addpd xmm1, xmm2            ; xmm1 = xmm1 + xmm2
-movupd [rcx], xmm1          ; A <- xmm0 (A + B)
+add_vectors proc
+vmovupd ymm1, [rcx]          ; ymm1 <- A
+vaddpd ymm1, ymm1, [rdx]     ; ymm1 = ymm1 + B
+vmovupd [rcx], ymm1          ; A <- ymm1 (A + B)
 ret
 add_vectors endp
 
-;vaddpd xmm2, xmm0, xmm1         ; xmm1 = xmm1 + xmm2		;alternative to store result in third vector
-
-substract_vectors proc ; a: QWORD, b: QWORD
-movupd xmm1, [rcx]          ; xmm1 <- A
-movupd xmm2, [rdx]          ; xmm2 <- B
-subpd xmm1, xmm2            ; xmm1 = xmm1 + xmm2
-movupd [rcx], xmm1          ; A <- xmm0 (A + B)
+subtract_vectors proc
+vmovupd ymm1, [rcx]          ; ymm1 <- A
+vsubpd ymm1, ymm1, [rdx]     ; ymm1 = ymm1 - B
+vmovupd [rcx], ymm1          ; A <- ymm1 (A - B)
 ret
-substract_vectors endp
+subtract_vectors endp
+
+
+add_scalar_to_vector proc
+vmovupd ymm1, [rcx]             ; ymm1 <- array A at addr rcx
+vmovapd xmm2, [rdx]				; xmm2 <- scalar
+vbroadcastsd ymm2, xmm2			; ymm2 <- low part of xmm2 * 4
+vaddpd ymm1, ymm1, ymm2         ; ymm1 = ymm1 + ymm2
+vmovupd [rcx], ymm1             ; A <- ymm1 (A + scalar)
+ret
+add_scalar_to_vector endp
+
+subtract_scalar_from_vector proc
+vmovupd ymm1, [rcx]             ; ymm1 <- array A at addr rcx
+vmovapd xmm2, [rdx]				; xmm2 <- scalar
+vbroadcastsd ymm2, xmm2			; ymm2 <- low part of xmm2 * 4
+vsubpd ymm1, ymm1, ymm2			; ymm1 = ymm1 - ymm2
+vmovupd [rcx], ymm1				; A <- ymm1 (A - scalar)
+ret
+subtract_scalar_from_vector endp
 
 END 
-
 ;; === KONIEC nn.asm === ;;

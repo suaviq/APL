@@ -1,6 +1,9 @@
 ;-------------------------------------------------------------------------
 LIBRARY ASM_dll
-EXPORTS add_vectors
-substract_vectors
+EXPORTS 
+add_vectors
+add_scalar_to_vector
+subtract_vectors
+subtract_scalar_from_vector
 MyProc1
 ;-------------------------------------------------------------------------

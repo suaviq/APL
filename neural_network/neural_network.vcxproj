@@ -154,6 +154,10 @@
   <ItemGroup>
     <ClCompile Include="neural_network.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="asm_functions.h" />
+    <ClInclude Include="paths.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
