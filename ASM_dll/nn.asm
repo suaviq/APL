@@ -20,7 +20,7 @@ DllEntry ENDP
 ;; ================ ;;
 
 
-    ;; === BASIC ARITHMETICS ===
+    ;; === BASIC VECTOR ARITHMETICS ===
 add_vectors proc
     vmovupd ymm1, [rcx]          ; ymm1 <- A
     vaddpd ymm1, ymm1, [rdx]     ; ymm1 = ymm1 + B
