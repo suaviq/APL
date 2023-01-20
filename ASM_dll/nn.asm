@@ -35,7 +35,6 @@ subtract_vectors proc
     ret
 subtract_vectors endp
 
-;; TODO: check if this works
 vector_wise_multiply proc
     vmovupd ymm1, [rcx]          ; ymm1 <- A
     vmulpd ymm1, ymm1, [rdx]     ; ymm1 = ymm1 * B
