@@ -88,6 +88,7 @@ mul_vector_by_scalar proc
     ret
 mul_vector_by_scalar endp
 
+;; TODO: optimise this by replacing multiplying with addition
 mul_matrix_by_scalar proc
     mov ebx, 20h                ; ebx = 32 (32 bytes is 4 doubles = our offset)
     mov r8, 0                   ; r8 <- 0 (counter)
@@ -109,6 +110,7 @@ mul_matrix_by_scalar endp
 
 
     ;; === OPERATIONS WITH MATRICES ===
+;; TODO: optimise this by replacing multiplying with addition
 add_matrices proc
     mov ebx, 20h                    ; ebx = offset
     mov r8, 0                       ; r8 <- 0 (counter)
@@ -126,6 +128,7 @@ loop_label:
     ret
 add_matrices endp
 
+;; TODO: optimise this by replacing multiplying with addition
 subtract_matrices proc
     mov ebx, 20h                    ; ebx = offset
     mov r8, 0                       ; r8 <- 0 (counter)
