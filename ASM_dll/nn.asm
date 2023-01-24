@@ -1,5 +1,7 @@
 ;; === nn.asm === ;;
 OPTION CASEMAP:NONE
+.data
+    ret_val qword 1.0
 .CODE
 DllEntry PROC hInstDLL:DWORD, reason:DWORD, reserved1:DWORD
 mov	eax, 1
@@ -42,22 +44,18 @@ vector_wise_multiply proc
     ret
 vector_wise_multiply endp
 
-;; TODO: find a way to make it work :/
 mul_vecT_by_vec proc
     mov r9, 0
-    vmovupd ymm0, [rcx]             ; ymm0 <- vecT
-    vmovupd ymm2, [rdx]             ; ymm2 <- vec
+    mov r10, 0
 mul_loop:
-    vbroadcastsd ymm1, [rcx + r9]   ; ymm1 = 4 * vecT[i]
-    vmulpd ymm1, ymm1, ymm2         ; multiply vec elements
-    vhaddpd ymm1, ymm1              ; add 2 pairs of vec products
-    mov eax, 0001b                  ; create writemask
-    kmovd k1, eax                   ; move writemask
-    vbroadcastsd ymm1{k1}, xmm1     ; broadcast needed element from low to high part
-    vhaddpd ymm1, ymm1              ; add 2 remaining pairs (2 results in both high ymm parts)
-    vextractf64x2 xmm1, ymm1, 1     ; move high to low
-    vmovupd ymm3{k1}, ymm1          ; ymm3 <- result vec
-    vmovupd [rcx], ymm3
+    vmovupd ymm3, [rcx][r10]        ; ymm3 <- vecT[i]
+    vbroadcastsd ymm0, xmm3         ; ymm0 = 4 * vecT[i]
+    vmulpd ymm2, ymm0, [rdx]        ; multiply vec row with vecT[i]
+    vmovupd [r8][r9], ymm2
+    add r9, 20h
+    add r10, 8
+    cmp r9, 80h
+    jne mul_loop
     ret
 mul_vecT_by_vec endp
 

@@ -57,6 +57,13 @@ int main() {
 	}
 
 
+	f_asm_3d mul_vecT_by_vec = (f_asm_3d)GetProcAddress(hGetProcIDDLL, "mul_vecT_by_vec");
+	if (!mul_vecT_by_vec) {
+		std::cout << "could not locate the function `mul_vecT_by_vec`" << std::endl;
+		return EXIT_FAILURE;
+	}
+
+
 	f_asm add_matrices = (f_asm)GetProcAddress(hGetProcIDDLL, "add_matrices");
 	if (!add_matrices) {
 		std::cout << "could not locate the function `add_matrices`" << std::endl;
@@ -81,47 +88,61 @@ int main() {
 	{
 		double* a = new double[4];
 		double* b = new double[4];
+		double* result = new double[16] { 0.0 };
 		for (size_t i = 0; i < 4; i += 1) {
-			a[i] = 0.4;
-			b[i] = 0.3;
+			a[i] = 2.0;
+			b[i] = (i+1) * 0.5;
 		}
 
+		mul_vecT_by_vec(a, b, result);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%lf  ", b[i]);
 		}
+		std::cout << '\n';
+		for (size_t i = 0; i < 4; i += 1) {
+			printf("%lf  ", a[i]);
+		}
+		std::cout << "\n\n";
+		for (size_t i = 0; i < 16; i += 1) {
+			printf("%lf\n", result[i]);
+		}
+		std::cout << '\n';
+		return 0;
+	
+
 		std::cout << '\n';
 		subtract_vectors(a, b);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 		add_vectors(a, b);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 		add_scalar_to_vector(a, new double(0.5));
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 		subtract_scalar_from_vector(a, new double(0.25));
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 		mul_vector_by_scalar(a, new double(2.0));
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 		vector_wise_multiply(a, b);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu: %lf\n", i, a[i]);
+			printf("%x: %lf\n", i, a[i]);
 		}
 		std::cout << '\n';
 	}
-	
+
 	std::cout << "\n=====================\n";
 	std::cout << "        MATRICES";
 	std::cout << "\n=====================\n";
@@ -133,7 +154,7 @@ int main() {
 			b[i] = (double(i)+1)/2;
 		}
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu >\t", i);
+			printf("%x >\t", i);
 			for (size_t j = 0; j < 4; j += 1) {
 				printf("%4f [%x]\t", a[4*i+j], &a[4*i+j]);
 			}
@@ -141,7 +162,7 @@ int main() {
 		}
 		printf("\n");
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu >\t", i);
+			printf("%x >\t", i);
 			for (size_t j = 0; j < 4; j += 1) {
 				printf("%4f [%x]\t", b[4*i+j], &b[4*i+j]);
 			}
@@ -150,7 +171,7 @@ int main() {
 		printf("\n");
 		add_matrices(a, b);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu >\t", i);
+			printf("%x >\t", i);
 			for (size_t j = 0; j < 4; j += 1) {
 				printf("%4f [%x]\t", a[4*i+j], &a[4*i+j]);
 			}
@@ -159,7 +180,7 @@ int main() {
 		printf("\n");
 		subtract_matrices(a, b);
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu >\t", i);
+			printf("%x >\t", i);
 			for (size_t j = 0; j < 4; j += 1) {
 				printf("%4f [%x]\t", a[4*i+j], &a[4*i+j]);
 			}
@@ -168,7 +189,7 @@ int main() {
 		printf("\n");
 		mul_matrix_by_scalar(a, new double(0.5));
 		for (size_t i = 0; i < 4; i += 1) {
-			printf("%lu >\t", i);
+			printf("%x >\t", i);
 			for (size_t j = 0; j < 4; j += 1) {
 				printf("%4f [%x]\t", a[4*i+j], &a[4*i+j]);
 			}
