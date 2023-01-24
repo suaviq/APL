@@ -90,7 +90,7 @@ int main() {
 		double* b = new double[4];
 		double* result = new double[16] { 0.0 };
 		for (size_t i = 0; i < 4; i += 1) {
-			a[i] = 2.0;
+			a[i] = (i+1) * 2.0;
 			b[i] = (i+1) * 0.5;
 		}
 
