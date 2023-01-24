@@ -20,7 +20,7 @@ DllEntry ENDP
 ;; ================ ;;
 
 
-    ;; === BASIC VECTOR ARITHMETICS ===
+    ;; === OPERATIONS WITH VECTORS ===
 add_vectors proc
     vmovupd ymm1, [rcx]          ; ymm1 <- A
     vaddpd ymm1, ymm1, [rdx]     ; ymm1 = ymm1 + B
@@ -41,6 +41,25 @@ vector_wise_multiply proc
     vmovupd [rcx], ymm1          ; A <- ymm1 (A * B)
     ret
 vector_wise_multiply endp
+
+;; TODO: find a way to make it work :/
+mul_vecT_by_vec proc
+    mov r9, 0
+    vmovupd ymm0, [rcx]             ; ymm0 <- vecT
+    vmovupd ymm2, [rdx]             ; ymm2 <- vec
+mul_loop:
+    vbroadcastsd ymm1, [rcx + r9]   ; ymm1 = 4 * vecT[i]
+    vmulpd ymm1, ymm1, ymm2         ; multiply vec elements
+    vhaddpd ymm1, ymm1              ; add 2 pairs of vec products
+    mov eax, 0001b                  ; create writemask
+    kmovd k1, eax                   ; move writemask
+    vbroadcastsd ymm1{k1}, xmm1     ; broadcast needed element from low to high part
+    vhaddpd ymm1, ymm1              ; add 2 remaining pairs (2 results in both high ymm parts)
+    vextractf64x2 xmm1, ymm1, 1     ; move high to low
+    vmovupd ymm3{k1}, ymm1          ; ymm3 <- result vec
+    vmovupd [rcx], ymm3
+    ret
+mul_vecT_by_vec endp
 
 
     ;; === OPERATIONS WITH SCALARS ===
@@ -74,7 +93,7 @@ mul_vector_by_scalar endp
 mul_matrix_by_scalar proc
     mov ebx, 20h                ; ebx = 32 (32 bytes is 4 doubles = our offset)
     mov r8, 0                   ; r8 <- 0 (counter)
-    mov r9, rdx                 ; move rdx to r9 because `mul` clears rdx (???)
+    mov r9, rdx                 ; move rdx to r9 because `mul` clears rdx
     vmovapd xmm2, [rdx]         ; xmm2 <- scalar
     vbroadcastsd ymm2, xmm2     ; ymm2 <- low part of xmm2 * 4
 loop_label:
@@ -95,7 +114,7 @@ mul_matrix_by_scalar endp
 add_matrices proc
     mov ebx, 20h                    ; ebx = offset
     mov r8, 0                       ; r8 <- 0 (counter)
-    mov r9, rdx                     ; move rdx to r9 because `mul` clears rdx (???)
+    mov r9, rdx                     ; move rdx to r9 because `mul` clears rdx
 loop_label:
     mov rax, r8                     ; rax = r8
     mul ebx                         ; rax = r8 * 32
