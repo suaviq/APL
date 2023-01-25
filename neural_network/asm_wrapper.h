@@ -15,6 +15,7 @@ extern "C" double* _stdcall add_scalar_to_vector(DWORDLONG x, DWORDLONG y);
 extern "C" double* _stdcall subtract_scalar_from_vector(DWORDLONG x, DWORDLONG y);
 extern "C" double* _stdcall vector_wise_multiply(DWORDLONG x, DWORDLONG y);
 extern "C" double* _stdcall mul_vecT_by_vec(DWORDLONG x, DWORDLONG y, DWORDLONG res);
+extern "C" double* _stdcall mul_vec_by_vecT(DWORDLONG x, DWORDLONG y, DWORDLONG res);
 extern "C" double* _stdcall mul_vector_by_scalar(DWORDLONG x, DWORDLONG y);
 extern "C" double* _stdcall mul_matrix_by_scalar(DWORDLONG x, DWORDLONG y);
 extern "C" double* _stdcall add_matrices(DWORDLONG x, DWORDLONG y);
@@ -37,11 +38,12 @@ public:
 	f_asm_f64x2 subtract_scalar_from_vector;
 	f_asm_f64x2 vector_wise_multiply;
 	f_asm_f64x3 mul_vecT_by_vec;
+	f_asm_f64x3 mul_vec_by_vecT;
 	f_asm_f64x2 mul_vector_by_scalar;
 	f_asm_f64x2 mul_matrix_by_scalar;
 	f_asm_f64x2 add_matrices;
 	f_asm_f64x2 subtract_matrices;
-	double* mul_matrix_by_vec(double* m, double* v);
+	inline double* mul_matrix_by_vec(double* m, double* v);
 
 	// Constructor & Destructor
 	AsmWrapper();
@@ -100,6 +102,11 @@ AsmWrapper::AsmWrapper() {
 		std::cerr << "[ERROR] could not locate the function `mul_vecT_by_vec`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
+	mul_vec_by_vecT = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vec_by_vecT");
+	if (!mul_vec_by_vecT) {
+		std::cerr << "[ERROR] could not locate the function `mul_vec_by_vecT`" << std::endl;
+		exit( EXIT_FAILURE );
+	}
 	add_matrices = (f_asm_f64x2)GetProcAddress(hGetProcIDDLL, "add_matrices");
 	if (!add_matrices) {
 		std::cerr << "[ERROR] could not locate the function `add_matrices`" << std::endl;
@@ -117,7 +124,12 @@ AsmWrapper::AsmWrapper() {
 	}
 }
 
-double* AsmWrapper::mul_matrix_by_vec(double* m, double* v) {
+inline double* AsmWrapper::mul_matrix_by_vec(double* m, double* v) {
 	double* ret = new double[4] { 0.0 };
+	double* tmp = new double[4] { 0.0 };
+	for (size_t i = 0; i < 4; i += 1) {
+		mul_vec_by_vecT(m + 4 * i, v, tmp);
+		ret[i] = tmp[0];	// this is ugly :(
+	}
 	return ret;
 }

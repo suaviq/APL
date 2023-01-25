@@ -1,25 +1,10 @@
 ;; === nn.asm === ;;
 OPTION CASEMAP:NONE
-.data
-    ret_val qword 1.0
 .CODE
 DllEntry PROC hInstDLL:DWORD, reason:DWORD, reserved1:DWORD
 mov	eax, 1
 ret
 DllEntry ENDP
-
-;; === TUTORIAL === ;;
-;; kolejnosc argumentow:
-;;
-;; 1 -- rcx -- *mm0
-;; 2 -- rdx -- *mm1
-;; 3 -- r8  -- *mm2
-;; 4 -- r9  -- *mm3
-;;
-;; lewe, jezeli int, prawe, jezeli float/double
-;; ymm, jezeli 64 bity, ymm, jezeli 128, zmm, jezeli 256
-;; return jest w eax
-;; ================ ;;
 
 
     ;; === OPERATIONS WITH VECTORS ===
@@ -60,18 +45,15 @@ loop_label:
 mul_vecT_by_vec endp
 
 mul_vec_by_vecT proc
-    mov r9, 0                       ; counter for loop / result index
-    mov r10, 0                      ; counter for vecT index
-loop_label:
-    vmovupd ymm3, [rcx][r10]        ; ymm3 <- vecT[i]
-    vbroadcastsd ymm0, xmm3         ; ymm0 = 4 * vecT[i]
-    vmulpd ymm2, ymm0, [rdx]        ; multiply vec row with vecT[i]
-    vmovupd [r8][r9], ymm2          ; store result in result matrix
-    add r9, 20h                     ; increment r9 by 64 (32 bytes = 256b = 4 doubles)
-    add r10, 8                      ; increment vecT index
-    cmp r9, 80h                     ; compare loop counter
-    jne loop_label                  ; loop
-    ret
+    vmovupd ymm2, [rcx]             ; ymm2 <- vec
+    vmovupd ymm1, [rdx]             ; ymm0 <- vecT
+mul_loop:
+    vmulpd ymm1, ymm1, ymm2         ; multiply vec elements
+    vhaddpd ymm1, ymm1, ymm1        ; add 2 pairs of vec products
+    vextracti128 xmm3, ymm1, 1      ; move high ymm1 to low xmm3
+    vaddpd ymm1, ymm1, ymm3         ; add low xmm3 (high ymm1) to low ymm1
+    vmovupd [r8], ymm1              ; store result in 3rd parameter (as an array, first 2 elements are the result)
+    ret                             
 mul_vec_by_vecT endp
 
 

@@ -10,26 +10,6 @@
 
 
 int main() {
-	/*
-	auto am = AsmWrapper();
-	double* a = new double[16];
-	double* b = new double[4];
-	double* res = new double[16];
-
-	for (size_t i = 0; i < 4; i += 1) {
-		for (size_t j = 0; j < 4; j += 1) {
-			a[4*i+j] = (4*i+j+1) * 2.0;
-		}
-		b[i] = (i+1) * 0.5;
-	}
-
-	res = am.mul_matrix_by_vec(a, b);
-	for (size_t i = 0; i < 16; i += 1) {
-		std::cout << res[i] << '\n';
-	}
-	return 0;
-	*/
-
 
 #if _DEBUG
 	std::cout << "Loading Debug DLL...\n\n";
@@ -84,6 +64,12 @@ int main() {
 		return EXIT_FAILURE;
 	}
 
+	f_asm_f64x2 mul_vec_by_vecT = (f_asm_f64x2)GetProcAddress(hGetProcIDDLL, "mul_vec_by_vecT");
+	if (!mul_vec_by_vecT) {
+		std::cout << "could not locate the function `mul_vec_by_vecT`" << std::endl;
+		return EXIT_FAILURE;
+	}
+
 
 	f_asm_f64x2 add_matrices = (f_asm_f64x2)GetProcAddress(hGetProcIDDLL, "add_matrices");
 	if (!add_matrices) {
@@ -110,8 +96,8 @@ int main() {
 		double* a = new double[4];
 		double* b = new double[4];
 		for (size_t i = 0; i < 4; i += 1) {
-			a[i] = (i+1) * 2.0;
-			b[i] = (i+1) * 0.5;
+			a[i] = 2.0 * (i+1);
+			b[i] = -0.5 * (i+1);
 		}
 
 		std::cout << '\n';
