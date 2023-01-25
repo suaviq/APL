@@ -47,7 +47,7 @@ vector_wise_multiply endp
 mul_vecT_by_vec proc
     mov r9, 0                       ; counter for loop / result index
     mov r10, 0                      ; counter for vecT index
-mul_loop:
+loop_label:
     vmovupd ymm3, [rcx][r10]        ; ymm3 <- vecT[i]
     vbroadcastsd ymm0, xmm3         ; ymm0 = 4 * vecT[i]
     vmulpd ymm2, ymm0, [rdx]        ; multiply vec row with vecT[i]
@@ -55,9 +55,24 @@ mul_loop:
     add r9, 20h                     ; increment r9 by 64 (32 bytes = 256b = 4 doubles)
     add r10, 8                      ; increment vecT index
     cmp r9, 80h                     ; compare loop counter
-    jne mul_loop                    ; loop
+    jne loop_label                  ; loop
     ret
 mul_vecT_by_vec endp
+
+mul_vec_by_vecT proc
+    mov r9, 0                       ; counter for loop / result index
+    mov r10, 0                      ; counter for vecT index
+loop_label:
+    vmovupd ymm3, [rcx][r10]        ; ymm3 <- vecT[i]
+    vbroadcastsd ymm0, xmm3         ; ymm0 = 4 * vecT[i]
+    vmulpd ymm2, ymm0, [rdx]        ; multiply vec row with vecT[i]
+    vmovupd [r8][r9], ymm2          ; store result in result matrix
+    add r9, 20h                     ; increment r9 by 64 (32 bytes = 256b = 4 doubles)
+    add r10, 8                      ; increment vecT index
+    cmp r9, 80h                     ; compare loop counter
+    jne loop_label                  ; loop
+    ret
+mul_vec_by_vecT endp
 
 
     ;; === OPERATIONS WITH SCALARS ===
