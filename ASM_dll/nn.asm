@@ -47,7 +47,6 @@ mul_vecT_by_vec endp
 mul_vec_by_vecT proc
     vmovupd ymm2, [rcx]             ; ymm2 <- vec
     vmovupd ymm1, [rdx]             ; ymm0 <- vecT
-mul_loop:
     vmulpd ymm1, ymm1, ymm2         ; multiply vec elements
     vhaddpd ymm1, ymm1, ymm1        ; add 2 pairs of vec products
     vextracti128 xmm3, ymm1, 1      ; move high ymm1 to low xmm3
@@ -58,6 +57,7 @@ mul_vec_by_vecT endp
 
 relu_vec proc
     vmovupd ymm1, [rcx]             ; ymm1 <- vec
+    vxorpd ymm2, ymm2, ymm2         ; clear ymm2
     vcmppd ymm2, ymm1, ymm2, 0dh    ; ymm2 = result of comparison between vec and all 0's
                                     ; 0dh = greater or equal
     vandpd ymm1, ymm1, ymm2         ; AND result between comparison result and vec
@@ -67,6 +67,7 @@ relu_vec endp
 
 derivative_relu_vec proc
     vmovupd ymm1, [rcx]             ; ymm1 <- vec
+    vxorpd ymm2, ymm2, ymm2         ; clear ymm2
     vcmppd ymm2, ymm1, ymm2, 0dh    ; ymm2 = result of comparison between vec and all 0's
                                     ; 0dh = greater or equal
     vandpd ymm1, ymm2, [rdx]        ; AND result between comparison result and vec of 4 1.0's

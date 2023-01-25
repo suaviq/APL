@@ -26,7 +26,7 @@ public:
         delete b;
         delete z;
         delete a;
-        delete a_prev;
+        if (!a_prev) delete a_prev;
         delete delta;
         delete error;
         delete learning_rate;
@@ -40,7 +40,7 @@ public:
         a_prev = new double[4]  { 0.0 };
         delta  = new double[16] { 0.0 };
         error  = new double[16] { 0.0 };
-        *learning_rate = lr;
+        learning_rate = new double(lr);
     }
 
     double* forward(double* a_prev) {

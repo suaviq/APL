@@ -71,10 +71,10 @@ public:
 
 AsmWrapper::AsmWrapper() {
 #if _DEBUG
-	std::cout << "Loading Debug DLL...\n\n";
+	std::cout << "Loading Debug DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
 #else
-	std::cout << "Loading Release DLL...\n\n";
+	std::cout << "Loading Release DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(ASM_DLL_PATH);
 #endif
 	
@@ -150,6 +150,8 @@ AsmWrapper::AsmWrapper() {
 		std::cerr << "[ERROR] could not locate the function `mul_matrix_by_scalar`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
+
+	std::cout << "DLL Loaded succesfully!\n";
 }
 
 
@@ -194,6 +196,18 @@ inline double AsmWrapper::mul_vec_by_vecT(double* vT, double* v) {
 	double* ret = new double[4];
 	_mul_vec_by_vecT(vT, v, ret);
 	return ret[0];
+}
+
+inline double* AsmWrapper::relu_vec(double* v) {
+	double* ret = new double[4];
+	_relu_vec(v, ret);
+	return ret;
+}
+
+inline double* AsmWrapper::derivative_relu_vec(double* v) {
+	double* ret = new double[4];
+	_derivative_relu_vec(v, new double[4] {1.0, 1.0, 1.0, 1.0}, ret);
+	return ret;
 }
 
 inline double* AsmWrapper::mul_vector_by_scalar(double* v, double* s) {
