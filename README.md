@@ -2,3 +2,4 @@
 
 ## TODO:
 * Clean up `neural_network.cpp`
+* Check if `AsmLayer` works properly

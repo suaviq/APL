@@ -167,13 +167,13 @@ inline double* AsmWrapper::subtract_vectors(double* v1, double* v2) {
 
 inline double* AsmWrapper::add_scalar_to_vector(double* v, double* s) {
 	double* ret = new double[4];
-	_add_scalar_to_vector(v1, s, ret);
+	_add_scalar_to_vector(v, s, ret);
 	return ret;
 }
 
 inline double* AsmWrapper::subtract_scalar_from_vector(double* v, double* s) {
 	double* ret = new double[4];
-	_subtract_scalar_from_vector(v1, s, ret);
+	_subtract_scalar_from_vector(v, s, ret);
 	return ret;
 }
 
