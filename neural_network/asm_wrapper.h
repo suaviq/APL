@@ -5,21 +5,21 @@
 #include "paths.h"
 
 // Function Types
-typedef void(__stdcall* f_asm_f64x3)(double*, double*);
+typedef void(__stdcall* f_asm_f64x2)(double*, double*);
 typedef void(__stdcall* f_asm_f64x3)(double*, double*, double*);
 
 // Function Declarations
-extern "C" double* _stdcall add_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall subtract_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall add_scalar_to_vector(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall subtract_scalar_from_vector(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall vector_wise_multiply(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall mul_vecT_by_vec(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall mul_vec_by_vecT(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall mul_vector_by_scalar(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall mul_matrix_by_scalar(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall add_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG res);
-extern "C" double* _stdcall subtract_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG res);
+extern "C" double* _stdcall add_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall subtract_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall add_scalar_to_vector(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall subtract_scalar_from_vector(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall vector_wise_multiply(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall mul_vecT_by_vec(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall mul_vec_by_vecT(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall mul_vector_by_scalar(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall mul_matrix_by_scalar(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall add_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
+extern "C" double* _stdcall subtract_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 
 /*
  * This class wraps the asm linear algebra procedures in its member functions
