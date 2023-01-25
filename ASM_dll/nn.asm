@@ -88,7 +88,7 @@ mul_vector_by_scalar proc
     ret
 mul_vector_by_scalar endp
 
-;; TODO: optimise this by replacing multiplication with addition
+;; TODO: optimise this by replacing multiplication with addition (of r8) (of r8)
 mul_matrix_by_scalar proc
     mov ebx, 20h                ; ebx = 32 (32 bytes is 4 doubles = our offset)
     mov r8, 0                   ; r8 <- 0 (counter)
@@ -110,38 +110,26 @@ mul_matrix_by_scalar endp
 
 
     ;; === OPERATIONS WITH MATRICES ===
-;; TODO: optimise this by replacing multiplication with addition
 add_matrices proc
-    mov ebx, 20h                    ; ebx = offset
-    mov r8, 0                       ; r8 <- 0 (counter)
-    mov r9, rdx                     ; move rdx to r9 because `mul` clears rdx
+    xor r8, r8                      ; r8 <- 0 (counter)
 loop_label:
-    mov rax, r8                     ; rax = r8
-    mul ebx                         ; rax = r8 * 32
-    mov rdx, r9                     ; get saved address from r9
-    vmovupd ymm1, [rax][rcx]        ; ymm1 <- array A (a row in matrix) at addr rcx + offset
-    vaddpd ymm1, ymm1, [rax][rdx]   ; ymm1 = ymm1 + ymm2
-    vmovupd [rax][rcx], ymm1        ; A <- ymm1 (A + B)
-    inc r8                          ; increment counter
-    cmp r8, 4                       ; check if 4 passes have been made
+    vmovupd ymm1, [r8][rcx]         ; ymm1 <- array A (a row in matrix) at addr rcx + offset
+    vaddpd ymm1, ymm1, [r8][rdx]    ; ymm1 = ymm1 + ymm2
+    vmovupd [r8][rcx], ymm1         ; A <- ymm1 (A + B)
+    add r8, 20h                     ; increment r8 by 32
+    cmp r8, 80h                     ; check if 4 passes have been made
     jne loop_label                  ; jump to loop_label if not
     ret
 add_matrices endp
 
-;; TODO: optimise this by replacing multiplication with addition
 subtract_matrices proc
-    mov ebx, 20h                    ; ebx = offset
-    mov r8, 0                       ; r8 <- 0 (counter)
-    mov r9, rdx                     ; move rdx to r9 because `mul` clears rdx (???)
+    xor r8, r8                      ; r8 <- 0 (counter)
 loop_label:
-    mov rax, r8                     ; rax = r8
-    mul ebx                         ; rax = r8 * 32
-    mov rdx, r9                     ; get saved address from r9
-    vmovupd ymm1, [rax][rcx]        ; ymm1 <- array A (a row in matrix) at addr rcx + offset
-    vsubpd ymm1, ymm1, [rax][rdx]   ; ymm1 = ymm1 + ymm2
-    vmovupd [rax][rcx], ymm1        ; A <- ymm1 (A + B)
-    inc r8                          ; increment counter
-    cmp r8, 4                       ; check if 4 passes have been made
+    vmovupd ymm1, [r8][rcx]         ; ymm1 <- array A (a row in matrix) at addr rcx + offset
+    vsubpd ymm1, ymm1, [r8][rdx]    ; ymm1 = ymm1 + ymm2
+    vmovupd [r8][rcx], ymm1         ; A <- ymm1 (A + B)
+    add r8, 20h                     ; increment r8 by 32
+    cmp r8, 80h                     ; check if 4 passes have been made
     jne loop_label                  ; jump to loop_label if not
     ret
 subtract_matrices endp

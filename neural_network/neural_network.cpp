@@ -10,6 +10,7 @@
 
 
 int main() {
+	/*
 	auto am = AsmWrapper();
 	double* a = new double[16];
 	double* b = new double[4];
@@ -27,6 +28,7 @@ int main() {
 		std::cout << res[i] << '\n';
 	}
 	return 0;
+	*/
 
 
 #if _DEBUG
