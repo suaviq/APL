@@ -8,6 +8,8 @@ subtract_scalar_from_vector
 vector_wise_multiply
 mul_vecT_by_vec
 mul_vec_by_vecT
+relu_vec
+derivative_relu_vec
 mul_vector_by_scalar
 mul_matrix_by_scalar
 add_matrices

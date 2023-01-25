@@ -56,6 +56,24 @@ mul_loop:
     ret                             
 mul_vec_by_vecT endp
 
+relu_vec proc
+    vmovupd ymm1, [rcx]             ; ymm1 <- vec
+    vcmppd ymm2, ymm1, ymm2, 0dh    ; ymm2 = result of comparison between vec and all 0's
+                                    ; 0dh = greater or equal
+    vandpd ymm1, ymm1, ymm2         ; AND result between comparison result and vec
+    vmovupd [rdx], ymm1             ; return ReLu vector
+    ret
+relu_vec endp
+
+derivative_relu_vec proc
+    vmovupd ymm1, [rcx]             ; ymm1 <- vec
+    vcmppd ymm2, ymm1, ymm2, 0dh    ; ymm2 = result of comparison between vec and all 0's
+                                    ; 0dh = greater or equal
+    vandpd ymm1, ymm2, [rdx]        ; AND result between comparison result and vec of 4 1.0's
+    vmovupd [r8], ymm1              ; return derivative ReLu vector
+    ret
+derivative_relu_vec endp
+
 
     ;; === OPERATIONS WITH SCALARS ===
 add_scalar_to_vector proc
