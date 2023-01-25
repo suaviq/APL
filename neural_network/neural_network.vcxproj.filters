@@ -26,5 +26,8 @@
     <ClInclude Include="asm_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="asm_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

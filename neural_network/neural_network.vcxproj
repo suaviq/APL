@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asm_functions.h" />
+    <ClInclude Include="asm_wrapper.h" />
     <ClInclude Include="paths.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

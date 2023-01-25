@@ -6,9 +6,29 @@
 
 #include "paths.h"
 #include "asm_functions.h"
+#include "asm_wrapper.h"
 
 
 int main() {
+	auto am = AsmWrapper();
+	double* a = new double[16];
+	double* b = new double[4];
+	double* res = new double[16];
+
+	for (size_t i = 0; i < 4; i += 1) {
+		for (size_t j = 0; j < 4; j += 1) {
+			a[4*i+j] = (4*i+j+1) * 2.0;
+		}
+		b[i] = (i+1) * 0.5;
+	}
+
+	res = am.mul_matrix_by_vec(a, b);
+	for (size_t i = 0; i < 16; i += 1) {
+		std::cout << res[i] << '\n';
+	}
+	return 0;
+
+
 #if _DEBUG
 	std::cout << "Loading Debug DLL...\n\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
@@ -17,7 +37,6 @@ int main() {
 	HINSTANCE hGetProcIDDLL = LoadLibrary(ASM_DLL_PATH);
 #endif
 
-	// HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
 	if (!hGetProcIDDLL) {
 		std::cout << "[ERROR] Could not load the dynamic library\n(Check if the path to the dll is correct)\n";
 		return EXIT_FAILURE;
