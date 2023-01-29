@@ -107,6 +107,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,6 +157,8 @@
     <ClCompile Include="neural_network.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpp_wrapper.h" />
+    <ClInclude Include="dll_wrapper.h" />
     <ClInclude Include="layer.h" />
     <ClInclude Include="asm_wrapper.h" />
     <ClInclude Include="paths.h" />

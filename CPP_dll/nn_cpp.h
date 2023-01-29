@@ -1,34 +1,49 @@
 // nn_cpp.h - Contains declarations of math functions
 #pragma once
 
+#define nn_cpp_EXPORTS
+
 #ifdef nn_cpp_EXPORTS
 #define nn_cpp __declspec(dllexport)
 #else
 #define nn_cpp __declspec(dllimport)
 #endif
 
-// The Fibonacci recurrence relation describes a sequence F
-// where F(n) is { n = 0, a
-//               { n = 1, b
-//               { n > 1, F(n-2) + F(n-1)
-// for some initial integral values a and b.
-// If the sequence is initialized F(0) = 1, F(1) = 1,
-// then this relation produces the well-known Fibonacci
-// sequence: 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+extern "C" nn_cpp 
+void multiply_matrix_by_vector_cpp(double* matrix, double* vector, double* ret);
 
-// Initialize a Fibonacci relation sequence
-// such that F(0) = a, F(1) = b.
-// This function must be called before any other function.
-extern "C" nn_cpp void fibonacci_init(
-	const unsigned long long a, const unsigned long long b);
+extern "C" nn_cpp 
+void multiply_matrix_by_constant_cpp(double* matrix, double constant, double* ret);
 
-// Produce the next value in the sequence.
-// Returns true on success and updates current value and index;
-// false on overflow, leaves current value and index unchanged.
-extern "C" nn_cpp bool fibonacci_next();
+extern "C" nn_cpp
+void multiply_vector_by_constant_cpp(double* vector, double constant, double* ret);
 
-// Get the current value in the sequence.
-extern "C" nn_cpp unsigned long long fibonacci_current();
+extern "C" nn_cpp
+void add_matrices_cpp(double* A, double* B, double* ret);
 
-// Get the position of the current value in the sequence.
-extern "C" nn_cpp unsigned fibonacci_index();
+extern "C" nn_cpp
+void subtract_matrices_cpp(double* A, double* B, double* ret);
+
+extern "C" nn_cpp
+void subtract_constant_from_vector_cpp(double constant, double* A, double* ret);
+
+extern "C" nn_cpp
+void subtract_vectors_cpp(double* A, double* B, double* ret);
+
+extern "C" nn_cpp
+void add_vectors_cpp(double* v1, double* v2, double* ret);
+
+extern "C" nn_cpp
+void multiply_vectorT_by_vector_cpp(double* vecT, double* vec, double* ret);
+
+extern "C" nn_cpp
+void multiply_vectorT_by_constant_cpp(double* vecT, double constant, double* ret);
+
+extern "C" nn_cpp
+void element_wise_multiply_cpp(double* vec1, double* vec2, double* ret);
+
+extern "C" nn_cpp
+void relu_vector_cpp(double* x, double* ret);
+
+extern "C" nn_cpp
+void derivative_relu_vector_cpp(double* x, double* ret);

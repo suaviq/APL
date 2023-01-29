@@ -8,7 +8,8 @@
 
 int main()
 {
-	test_layer();
+	Layer l = Layer();
+	// test_layer();
 	return EXIT_SUCCESS;
 	
 }

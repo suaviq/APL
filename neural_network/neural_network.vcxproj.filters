@@ -29,5 +29,11 @@
     <ClInclude Include="layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cpp_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dll_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,14 +1,8 @@
 #pragma once
-#include <windows.h>
-#include <iostream>
 
-#include "paths.h"
+#include "dll_wrapper.h"
 
-// Function Types
-typedef void(__stdcall* f_asm_f64x2)(double*, double*);
-typedef void(__stdcall* f_asm_f64x3)(double*, double*, double*);
-
-// Function Declarations (TODO: this `double*` could be changed to void (perhaps these lines could be deleted?))
+// Function Declarations (TODO: this `double*` could be changed to void)
 extern "C" double* _stdcall _add_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 extern "C" double* _stdcall _subtract_vectors(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 extern "C" double* _stdcall _add_scalar_to_vector(DWORDLONG x, DWORDLONG y, DWORDLONG result);
@@ -23,28 +17,25 @@ extern "C" double* _stdcall _mul_matrix_by_scalar(DWORDLONG x, DWORDLONG y, DWOR
 extern "C" double* _stdcall _add_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 extern "C" double* _stdcall _subtract_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 
-/*
- * This class wraps the asm linear algebra procedures in its member functions
- */
-class AsmWrapper {
+class AsmWrapper : DllWrapper {
 
 private:
 	// DLL Instance
 	HINSTANCE hGetProcIDDLL;
 	// DLL Procedures
-	f_asm_f64x3 _add_vectors;
-	f_asm_f64x3 _subtract_vectors;
-	f_asm_f64x3 _add_scalar_to_vector;
-	f_asm_f64x3 _subtract_scalar_from_vector;
-	f_asm_f64x3 _vector_wise_multiply;
-	f_asm_f64x3 _mul_vecT_by_vec;
-	f_asm_f64x3 _mul_vec_by_vecT;
-	f_asm_f64x2 _relu_vec;
-	f_asm_f64x3 _derivative_relu_vec;
-	f_asm_f64x3 _mul_vector_by_scalar;
-	f_asm_f64x3 _mul_matrix_by_scalar;
-	f_asm_f64x3 _add_matrices;
-	f_asm_f64x3 _subtract_matrices;
+	f_dll_f64x3 _add_vectors;
+	f_dll_f64x3 _subtract_vectors;
+	f_dll_f64x3 _add_scalar_to_vector;
+	f_dll_f64x3 _subtract_scalar_from_vector;
+	f_dll_f64x3 _vector_wise_multiply;
+	f_dll_f64x3 _mul_vecT_by_vec;
+	f_dll_f64x3 _mul_vec_by_vecT;
+	f_dll_f64x2 _relu_vec;
+	f_dll_f64x3 _derivative_relu_vec;
+	f_dll_f64x3 _mul_vector_by_scalar;
+	f_dll_f64x3 _mul_matrix_by_scalar;
+	f_dll_f64x3 _add_matrices;
+	f_dll_f64x3 _subtract_matrices;
 
 public:
 	// Accessible functions
@@ -85,67 +76,67 @@ AsmWrapper::AsmWrapper() {
 	}
 
 	// Assign procedures from DLL
-	_subtract_vectors = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_vectors");
+	_subtract_vectors = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_vectors");
 	if (!_subtract_vectors) {
 		std::cerr << "[ERROR] could not locate the function `subtract_vectors`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_add_vectors = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "add_vectors");
+	_add_vectors = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "add_vectors");
 	if (!_add_vectors) {
 		std::cerr << "[ERROR] could not locate the function `add_vectors`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_add_scalar_to_vector = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "add_scalar_to_vector");
+	_add_scalar_to_vector = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "add_scalar_to_vector");
 	if (!_add_scalar_to_vector) {
 		std::cerr << "[ERROR] could not locate the function `add_scalar_to_vector`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_subtract_scalar_from_vector = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_scalar_from_vector");
+	_subtract_scalar_from_vector = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_scalar_from_vector");
 	if (!_subtract_scalar_from_vector) {
 		std::cerr << "[ERROR] could not locate the function `subtract_scalar_from_vector`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_mul_vector_by_scalar = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vector_by_scalar");
+	_mul_vector_by_scalar = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vector_by_scalar");
 	if (!_mul_vector_by_scalar) {
 		std::cerr << "[ERROR] could not locate the function `mul_vector_by_scalar`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_vector_wise_multiply = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "vector_wise_multiply");
+	_vector_wise_multiply = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "vector_wise_multiply");
 	if (!_vector_wise_multiply) {
 		std::cerr << "[ERROR] could not locate the function `vector_wise_multiply`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_mul_vecT_by_vec = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vecT_by_vec");
+	_mul_vecT_by_vec = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vecT_by_vec");
 	if (!_mul_vecT_by_vec) {
 		std::cerr << "[ERROR] could not locate the function `mul_vecT_by_vec`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_mul_vec_by_vecT = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vec_by_vecT");
+	_mul_vec_by_vecT = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vec_by_vecT");
 	if (!_mul_vec_by_vecT) {
 		std::cerr << "[ERROR] could not locate the function `mul_vec_by_vecT`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_relu_vec = (f_asm_f64x2)GetProcAddress(hGetProcIDDLL, "relu_vec");
+	_relu_vec = (f_dll_f64x2)GetProcAddress(hGetProcIDDLL, "relu_vec");
 	if (!_relu_vec) {
 		std::cerr << "[ERROR] could not locate the function `relu_vec`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_derivative_relu_vec = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "derivative_relu_vec");
+	_derivative_relu_vec = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "derivative_relu_vec");
 	if (!_derivative_relu_vec) {
 		std::cerr << "[ERROR] could not locate the function `derivative_relu_vec`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_add_matrices = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "add_matrices");
+	_add_matrices = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "add_matrices");
 	if (!_add_matrices) {
 		std::cerr << "[ERROR] could not locate the function `add_matrices`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_subtract_matrices = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_matrices");
+	_subtract_matrices = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_matrices");
 	if (!_subtract_matrices) {
 		std::cerr << "[ERROR] could not locate the function `subtract_matrices`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	_mul_matrix_by_scalar = (f_asm_f64x3)GetProcAddress(hGetProcIDDLL, "mul_matrix_by_scalar");
+	_mul_matrix_by_scalar = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "mul_matrix_by_scalar");
 	if (!_mul_matrix_by_scalar) {
 		std::cerr << "[ERROR] could not locate the function `mul_matrix_by_scalar`" << std::endl;
 		exit( EXIT_FAILURE );

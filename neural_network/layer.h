@@ -1,5 +1,7 @@
 #pragma once
 #include "asm_wrapper.h"
+#include "cpp_wrapper.h"
+#include "dll_wrapper.h"
 #include <string>
 #include <ctime>
 
@@ -47,6 +49,9 @@ protected:
 	double* error;  // error
 	double* learning_rate;
 	AsmWrapper aw = AsmWrapper();
+	CppWrapper cw = CppWrapper();
+
+	DllWrapper* dll;
 
 	double* initialize_layer_weights();
 	double* initialize_layer_bias();
@@ -78,8 +83,8 @@ public:
 
 	double* forward(double* a_prev, int verbose = 1) {
 		
-		this->z = aw.mul_matrix_by_vec(this->W, a_prev);
-		this->a = aw.relu_vec(this->z);
+		this->z = dll->mul_matrix_by_vec(this->W, a_prev);
+		this->a = dll->relu_vec(this->z);
 		this->a_prev = a_prev;
 
 		if (verbose > 1)
@@ -97,17 +102,17 @@ public:
 		//std::cout << std::endl << "BACKWARD PROPAGATION:" << std::endl;
 		// weight
 		double* W_nextT = transpoze(W_next);
-		this->error = aw.mul_matrix_by_vec(W_nextT, delta_next);
+		this->error = dll->mul_matrix_by_vec(W_nextT, delta_next);
 		// delta
-		this->delta = aw.vector_wise_multiply(this->error, aw.derivative_relu_vec(this->a));
+		this->delta = dll->vector_wise_multiply(this->error, dll->derivative_relu_vec(this->a));
 
 		// update weights
-		double* w = aw.mul_vecT_by_vec(this->delta, this->a_prev);
-		double* w1 = aw.mul_matrix_by_scalar(w, this->learning_rate);
-		this->W = aw.subtract_matrices(this->W, w1);
+		double* w = dll->mul_vecT_by_vec(this->delta, this->a_prev);
+		double* w1 = dll->mul_matrix_by_scalar(w, this->learning_rate);
+		this->W = dll->subtract_matrices(this->W, w1);
 
 		// update bias
-		this->b = aw.subtract_vectors(this->b, aw.vector_wise_multiply(this->b, this->delta));
+		this->b = dll->subtract_vectors(this->b, dll->vector_wise_multiply(this->b, this->delta));
 
 		if (verbose > 1)
 		{
@@ -179,15 +184,15 @@ public:
 	void backward(double* y, int verbose = 1) {
 		// update bias
 		
-		this->error = aw.subtract_vectors(this->a, y);
+		this->error = dll->subtract_vectors(this->a, y);
 		// weight
-		this->delta = aw.vector_wise_multiply(this->error, aw.derivative_relu_vec(this->a));
+		this->delta = dll->vector_wise_multiply(this->error, dll->derivative_relu_vec(this->a));
 		// update weights
-		double* w = aw.mul_vecT_by_vec(this->delta, this->a_prev);
-		double* w1 = aw.mul_matrix_by_scalar(w, this->learning_rate);
-		this->W = aw.subtract_matrices(this->W, w1);
+		double* w = dll->mul_vecT_by_vec(this->delta, this->a_prev);
+		double* w1 = dll->mul_matrix_by_scalar(w, this->learning_rate);
+		this->W = dll->subtract_matrices(this->W, w1);
 		// update bias
-		this->b = aw.subtract_vectors(this->b, aw.vector_wise_multiply(this->b, this->delta));
+		this->b = dll->subtract_vectors(this->b, dll->vector_wise_multiply(this->b, this->delta));
 		
 		if (verbose > 1)
 		{
