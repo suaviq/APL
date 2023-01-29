@@ -4,10 +4,11 @@
 
 #include "paths.h"
 #include "asm_wrapper.h"
-#include "asm_layer.h"
+#include "layer.h"
 
-
-int main() {
+int main()
+{
 	test_layer();
 	return EXIT_SUCCESS;
+	
 }
