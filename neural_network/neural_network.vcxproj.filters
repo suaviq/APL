@@ -26,9 +26,6 @@
     <ClInclude Include="asm_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="neural_network.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>

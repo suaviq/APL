@@ -25,6 +25,16 @@ void cout_vector(std::string name, double* v)
 	printf("\n");
 }
 
+double get_loss(double *delta)
+{
+	double loss = 0.0;
+	for (int i = 0; i < 4; i++)
+	{
+		loss += abs(delta[i]);
+	}
+	return loss;
+}
+
 
 class Layer {
 protected:
@@ -136,7 +146,7 @@ double* Layer::initialize_layer_weights() {
 	srand(time(0));
 	double* matrix = new double[16];
 	for (size_t i = 0; i < 16; i += 1) {
-		matrix[i] = double((rand() % 100) - 50) / double(1000);
+		matrix[i] = double((rand() % 100)) / double(10000);
 		//std::cout << matrix[i] << "\t";
 	}
 	return matrix;
@@ -146,7 +156,7 @@ double* Layer::initialize_layer_bias() {
 	srand(time(0));
 	double* vec = new double[4];
 	for (size_t i = 0; i < 4; i += 1) {
-		vec[i] = double((rand() % 100) - 50) / double(1000);
+		vec[i] = double((rand() % 100)) / double(10000);
 	}
 	return vec;
 }
@@ -199,19 +209,19 @@ public:
 void test_layer() {
 
 	const int m = 4;
-	const int epochs = 10;
-	int verbose = 1;
-	double learning_rate = 0.01;
-	// linear function
+	const int epochs = 3;
+	int verbose = 1; //bigger than 1 to print things
+	double learning_rate = 0.05;
+	// linear function y = 2x+1
 	double x_raw[m][4] = { 1.0, 2.0, 1.5, 3.3, 
-						-2.0, -4.0, -3.4, -8.5,
+						1.0, 2.0, 1.5, 3.3,
 						2.0, 6.1, 9.5, 6.3,
-						-2.0, -4.0, -3.4, -8.5, };
+						2.0, 6.1, 9.5, 6.3 };
 
-	double y_raw[m][4] = { 1.0, 1.0, 1.0, 1.0,
-						0.0, 0.0, 0.0, 0.0,
-						1.0, 1.0, 1.0, 1.0,
-						0.0, 0.0, 0.0, 0.0 };
+	double y_raw[m][4] = { 3.0, 5.0, 4.0, 7.6,
+						3.0, 5.0, 4.0, 7.6,
+						5.0, 13.2, 20.0, 13.6,
+						5.0, 13.2, 20.0, 13.6 };
 	double** x = new double* [m];
 	double** y = new double* [m];
 
@@ -234,7 +244,7 @@ void test_layer() {
 	{
 		for (int i = 0; i < m; i++)
 		{
-			std::cout << "epoch: " << epoch + 1 << "\tprogress: " << double(i + 1) / m * 100 << "%" << std::endl;
+			double loss = 0;
 			hidden_layer_1.forward(x[i], verbose);
 			hidden_layer_2.forward(hidden_layer_1.access_a(), verbose);
 			hidden_layer_3.forward(hidden_layer_2.access_a(), verbose);
@@ -244,6 +254,10 @@ void test_layer() {
 			hidden_layer_3.backward(out_layer.access_W(), out_layer.access_b(), out_layer.access_delta(), verbose);
 			hidden_layer_2.backward(hidden_layer_3.access_W(), hidden_layer_3.access_b(), hidden_layer_3.access_delta(), verbose);
 			hidden_layer_1.backward(hidden_layer_2.access_W(), hidden_layer_2.access_b(), hidden_layer_2.access_delta(), verbose);
+
+			loss += get_loss(out_layer.access_delta())/(i+1);
+
+			std::cout << "epoch: " << epoch + 1 << "\tprogress: " << double(i + 1) / m * 100 << "%" << "\tloss: " << loss << std::endl;
 		}
 	}
 
