@@ -18,13 +18,6 @@ extern "C" double* _stdcall _add_matrices_cpp(DWORDLONG x, DWORDLONG y, DWORDLON
 extern "C" double* _stdcall _subtract_matrices_cpp(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 
 
-/*
-
-	TODO: 
-	  1. Do something about functions that do not have representation in DLL
-
-*/
-
 class CppWrapper : public DllWrapper {
 
 private:
