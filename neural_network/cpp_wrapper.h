@@ -25,7 +25,7 @@ extern "C" double* _stdcall _subtract_matrices_cpp(DWORDLONG x, DWORDLONG y, DWO
 
 */
 
-class CppWrapper : private DllWrapper {
+class CppWrapper : public DllWrapper {
 
 private:
 	// DLL Instance
@@ -71,10 +71,8 @@ public:
 
 CppWrapper::CppWrapper() {
 #if _DEBUG
-	std::cout << "Loading Debug C++ DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_CPP_DLL_PATH);
 #else
-	std::cout << "Loading Release C++ DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(CPP_DLL_PATH);
 #endif
 	
@@ -155,8 +153,6 @@ CppWrapper::CppWrapper() {
 		std::cerr << "[ERROR] could not locate the function `mul_matrix_by_scalar_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-
-	std::cout << "DLL Loaded succesfully!\n";
 }
 
 

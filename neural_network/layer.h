@@ -12,7 +12,7 @@ void cout_matrix(std::string name, double* M)
 	for (size_t i = 0; i < 4; i += 1) {
 		printf("%x >\t", i);
 		for (size_t j = 0; j < 4; j += 1) {
-			printf("%4f  \t", M[4 * i + j]);
+			printf("%04lf  \t", M[4 * i + j]);
 		}
 		printf("\n");
 	}
@@ -22,7 +22,7 @@ void cout_vector(std::string name, double* v)
 {
 	std::cout << std::endl << "calculate " << name << ":" << std::endl;
 	for (size_t i = 0; i < 4; i += 1) {
-		printf("%lf  ", v[i]);
+		printf("%04lf  ", v[i]);
 	}
 	printf("\n");
 }
@@ -67,7 +67,7 @@ public:
 		if (!a_prev) delete a_prev;
 		delete delta;
 		delete error;
-		delete learning_rate;
+		// delete learning_rate;
 	}
 
 	Layer(double lr, int wrapper_choice) {
@@ -78,23 +78,24 @@ public:
 		a_prev = new double[4]{ 0.0 };
 		delta = new double[4]{ 0.0 };
 		error = new double[4]{ 0.0 };
-		learning_rate = new double(lr);
+		this->learning_rate = new double(lr);
+		this->aw = AsmWrapper();
+		this->cw = CppWrapper();
 		switch(wrapper_choice) {
 		case 0:
-			this->dll = (DllWrapper*) & aw;
+			this->dll = (DllWrapper*) &this->aw;
 			break;
 		case 1:
-			this->dll = (DllWrapper*) & cw;
+			this->dll = (DllWrapper*) &this->cw;
 			break;
 		default:
-			this->dll = (DllWrapper*) & aw;
+			this->dll = (DllWrapper*) &this->aw;
 			break;
 		}
 
 	}
 
 	double* forward(double* a_prev, int verbose = 1) {
-		
 		this->z = dll->mul_matrix_by_vec(this->W, a_prev);
 		this->a = dll->relu_vec(this->z);
 		this->a_prev = a_prev;
@@ -164,7 +165,6 @@ double* Layer::initialize_layer_weights() {
 	double* matrix = new double[16];
 	for (size_t i = 0; i < 16; i += 1) {
 		matrix[i] = double((rand() % 100)) / double(10000);
-		//std::cout << matrix[i] << "\t";
 	}
 	return matrix;
 }
@@ -190,9 +190,6 @@ double* Layer::transpoze(double* m) {
 
 class OutputLayer : public Layer {
 public:
-	using Layer::forward;
-	using Layer::Layer;
-
 	void backward(double* y, int verbose = 1) {
 		// update bias
 		
@@ -220,13 +217,36 @@ public:
 		}
 		// return this->b;
 	}
+	OutputLayer(double lr, int wrapper_choice) {
+		W = initialize_layer_weights();
+		b = initialize_layer_bias();
+		z = new double[4] { 0.0 };
+		a = new double[4] { 0.0 };
+		a_prev = new double[4] { 0.0 };
+		delta = new double[4] { 0.0 };
+		error = new double[4] { 0.0 };
+		this->learning_rate = new double(lr);
+		this->aw = AsmWrapper();
+		this->cw = CppWrapper();
+		switch (wrapper_choice) {
+		case 0:
+			this->dll = (DllWrapper*)&this->aw;
+			break;
+		case 1:
+			this->dll = (DllWrapper*)&this->cw;
+			break;
+		default:
+			this->dll = (DllWrapper*)&this->aw;
+			break;
+		}
+	}
 };
 
 
-void test_layer(const int layers_count, const int dll_type) {
+void test_layer(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
 	const int m = 4;
-	const int epochs = 1;
-	int verbose = 1; //bigger than 1 to print things
+	// const int epochs = 1;
+	// int verbose = 1; //bigger than 1 to print things
 	double learning_rate = 0.5;
 	// linear function y = 2x+1
 	double x_raw[m][4] = { 1.0, 2.0, 1.5, 3.3, 
@@ -250,45 +270,61 @@ void test_layer(const int layers_count, const int dll_type) {
 		}
 	}
 
-	Layer hidden_layer_1 = Layer(learning_rate, dll_type);
-	Layer hidden_layer_2 = Layer(learning_rate, dll_type);
-	Layer hidden_layer_3 = Layer(learning_rate, dll_type);
+	Layer* hidden_layers = new Layer[layers_count];
+	for (size_t i = 0; i < layers_count; ++i) {
+		hidden_layers[i] = Layer(learning_rate, dll_type);
+	}
 	OutputLayer out_layer = OutputLayer(learning_rate, dll_type);
 	
-	std::cout << "---------------------------------  FIT  ------------------------------------" << std::endl;
-	for (int epoch = 0; epoch < epochs; ++epoch)
+	if (verbose >= 0) std::cout << "---------------------------------  FIT  ------------------------------------" << std::endl;
+	for (unsigned int epoch = 0; epoch < epochs; ++epoch)
 	{
 		for (int i = 0; i < m; ++i)
 		{
 			double loss = 0;
-			hidden_layer_1.forward(x[i], verbose);
-			hidden_layer_2.forward(hidden_layer_1.access_a(), verbose);
-			hidden_layer_3.forward(hidden_layer_2.access_a(), verbose);
-			out_layer.forward(hidden_layer_3.access_a(), verbose);
+			// hidden_layers[0].forward(x[i], verbose);
+			for (size_t i = 1; i < layers_count; ++i) {
+				hidden_layers[i].forward(hidden_layers[i-1].access_a(), verbose);
+			}
+			out_layer.forward(hidden_layers[layers_count-1].access_a(), verbose);
 
 			out_layer.backward(y[i], verbose);
-			hidden_layer_3.backward(out_layer.access_W(), out_layer.access_b(), out_layer.access_delta(), verbose);
-			hidden_layer_2.backward(hidden_layer_3.access_W(), hidden_layer_3.access_b(), hidden_layer_3.access_delta(), verbose);
-			hidden_layer_1.backward(hidden_layer_2.access_W(), hidden_layer_2.access_b(), hidden_layer_2.access_delta(), verbose);
+			hidden_layers[layers_count-1].backward(out_layer.access_W(), out_layer.access_b(), out_layer.access_delta(), verbose);
+			for (size_t i = layers_count - 2; i > 0; --i) {
+				hidden_layers[i].backward(
+					hidden_layers[i + 1].access_W(),
+					hidden_layers[i + 1].access_b(),
+					hidden_layers[i + 1].access_delta(),
+					verbose
+				);
+			}
+			hidden_layers[0].backward(
+				hidden_layers[1].access_W(), 
+				hidden_layers[1].access_b(), 
+				hidden_layers[1].access_delta(), 
+				verbose
+			);
 
 			loss += get_loss(out_layer.access_delta())/(i+1);
 
-			std::cout << "epoch: " << epoch + 1 << "\tprogress: " << double(i + 1) / m * 100 << "%" << "\tloss: " << loss << std::endl;
+			if (verbose >= 0) std::cout << "epoch: " << epoch + 1 << "\tprogress: " << double(i + 1) / m * 100 << "%" << "\tloss: " << loss << std::endl;
 		}
 	}
 
-	std::cout << "---------------------------------  PREDICT  --------------------------------" << std::endl;
+	if (verbose >= 0) std::cout << "---------------------------------  PREDICT  --------------------------------" << std::endl;
 
 	for (int i = 0; i < m; ++i)
 	{
-		hidden_layer_1.forward(x[i], verbose);
-		hidden_layer_2.forward(hidden_layer_1.access_a(), verbose);
-		hidden_layer_3.forward(hidden_layer_2.access_a(), verbose);
-		out_layer.forward(hidden_layer_3.access_a(), verbose);
-		cout_vector("y true", y[i]);
-		cout_vector("prediction", out_layer.access_a());
+		hidden_layers[0].forward(x[i], verbose);
+		for (size_t i = 1; i < layers_count; ++i) {
+			hidden_layers[i].forward(hidden_layers[i-1].access_a(), verbose);
+		}
+		out_layer.forward(hidden_layers[layers_count-1].access_a(), verbose);
+		if (verbose >= 0) cout_vector("y true", y[i]);
+		if (verbose >= 0) cout_vector("prediction", out_layer.access_a());
 	}
 
+	// delete[] hidden_layers;
 	delete[] x;
 	delete[] y;
 }
