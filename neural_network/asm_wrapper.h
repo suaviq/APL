@@ -229,7 +229,7 @@ inline double* AsmWrapper::mul_matrix_by_vec(double* m, double* v) {
 	double* tmp = new double[4];
 	for (size_t i = 0; i < 4; i += 1) {
 		_mul_vec_by_vecT(m + 4 * i, v, tmp);
-		ret[i] = tmp[0];	// this is ugly :(
+		ret[i] = tmp[0];
 	}
 	return ret;
 }
