@@ -70,7 +70,7 @@ public:
 		delete learning_rate;
 	}
 
-	Layer(double lr) {
+	Layer(double lr, int wrapper_choice) {
 		W = initialize_layer_weights();
 		b = initialize_layer_bias();
 		z = new double[4]{ 0.0 };
@@ -79,6 +79,18 @@ public:
 		delta = new double[4]{ 0.0 };
 		error = new double[4]{ 0.0 };
 		learning_rate = new double(lr);
+		switch(wrapper_choice) {
+		case 0:
+			this->dll = (DllWrapper*) & aw;
+			break;
+		case 1:
+			this->dll = (DllWrapper*) & cw;
+			break;
+		default:
+			this->dll = (DllWrapper*) & aw;
+			break;
+		}
+
 	}
 
 	double* forward(double* a_prev, int verbose = 1) {
@@ -211,12 +223,11 @@ public:
 };
 
 
-void test_layer() {
-
+void test_layer(const int layers_count, const int dll_type) {
 	const int m = 4;
-	const int epochs = 3;
+	const int epochs = 1;
 	int verbose = 1; //bigger than 1 to print things
-	double learning_rate = 0.05;
+	double learning_rate = 0.5;
 	// linear function y = 2x+1
 	double x_raw[m][4] = { 1.0, 2.0, 1.5, 3.3, 
 						1.0, 2.0, 1.5, 3.3,
@@ -239,15 +250,15 @@ void test_layer() {
 		}
 	}
 
-	Layer hidden_layer_1 = Layer(learning_rate);
-	Layer hidden_layer_2 = Layer(learning_rate);
-	Layer hidden_layer_3 = Layer(learning_rate);
-	OutputLayer out_layer = OutputLayer(learning_rate);
+	Layer hidden_layer_1 = Layer(learning_rate, dll_type);
+	Layer hidden_layer_2 = Layer(learning_rate, dll_type);
+	Layer hidden_layer_3 = Layer(learning_rate, dll_type);
+	OutputLayer out_layer = OutputLayer(learning_rate, dll_type);
 	
 	std::cout << "---------------------------------  FIT  ------------------------------------" << std::endl;
-	for (int epoch = 0; epoch < epochs; epoch++)
+	for (int epoch = 0; epoch < epochs; ++epoch)
 	{
-		for (int i = 0; i < m; i++)
+		for (int i = 0; i < m; ++i)
 		{
 			double loss = 0;
 			hidden_layer_1.forward(x[i], verbose);
@@ -268,7 +279,7 @@ void test_layer() {
 
 	std::cout << "---------------------------------  PREDICT  --------------------------------" << std::endl;
 
-	for (int i = 0; i < m; i++)
+	for (int i = 0; i < m; ++i)
 	{
 		hidden_layer_1.forward(x[i], verbose);
 		hidden_layer_2.forward(hidden_layer_1.access_a(), verbose);

@@ -6,10 +6,13 @@
 #include "asm_wrapper.h"
 #include "layer.h"
 
+enum DllType {
+	ASM = 0,
+	CPP = 1
+};
+
 int main()
 {
-	Layer l = Layer();
-	// test_layer();
+	test_layer(5, DllType::ASM);
 	return EXIT_SUCCESS;
-	
 }

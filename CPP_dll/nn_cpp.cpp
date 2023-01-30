@@ -2,10 +2,7 @@
 #include "pch.h" // use stdafx.h in Visual Studio 2017 and earlier
 #include "nn_cpp.h"
 
-#include <cmath>
 #include <cstdlib>
-#include <ctime>
-#include <iostream>
 #include <stdlib.h>
 
 void multiply_matrix_by_vector_cpp(double* matrix, double* vector, double* ret)

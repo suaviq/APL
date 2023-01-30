@@ -17,7 +17,7 @@ extern "C" double* _stdcall _mul_matrix_by_scalar(DWORDLONG x, DWORDLONG y, DWOR
 extern "C" double* _stdcall _add_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 extern "C" double* _stdcall _subtract_matrices(DWORDLONG x, DWORDLONG y, DWORDLONG result);
 
-class AsmWrapper : DllWrapper {
+class AsmWrapper : private DllWrapper {
 
 private:
 	// DLL Instance
@@ -62,10 +62,10 @@ public:
 
 AsmWrapper::AsmWrapper() {
 #if _DEBUG
-	std::cout << "Loading Debug DLL...\n";
+	std::cout << "Loading Debug ASM DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
 #else
-	std::cout << "Loading Release DLL...\n";
+	std::cout << "Loading Release ASM DLL...\n";
 	HINSTANCE hGetProcIDDLL = LoadLibrary(ASM_DLL_PATH);
 #endif
 	
