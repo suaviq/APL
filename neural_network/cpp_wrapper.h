@@ -71,14 +71,17 @@ public:
 
 CppWrapper::CppWrapper() {
 #if _DEBUG
-	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_CPP_DLL_PATH);
+	auto _path = DEBUG_ASM_DLL_PATH;
+	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
 #else
-	HINSTANCE hGetProcIDDLL = LoadLibrary(CPP_DLL_PATH);
+	auto _path = ASM_DLL_PATH;
+	HINSTANCE hGetProcIDDLL = LoadLibrary(ASM_DLL_PATH);
 #endif
 	
 	// Check if DLL Exists
 	if (!hGetProcIDDLL) {
 		std::cerr << "[ERROR] Could not load the dynamic library\n(Check if the path to the dll is correct)\n";
+		std::cerr << " > Current path: " << _path << ", from the file `paths.h`\n";
 		exit( EXIT_FAILURE );
 	}
 
