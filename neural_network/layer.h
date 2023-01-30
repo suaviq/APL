@@ -96,6 +96,8 @@ public:
 	}
 
 	double* forward(double* a_prev, int verbose = 1) {
+		// z -> a_prev * W + b
+		// a -> activation(z)
 		this->z = dll->mul_matrix_by_vec(this->W, a_prev);
 		this->a = dll->relu_vec(this->z);
 		this->a_prev = a_prev;
@@ -112,6 +114,10 @@ public:
 	}
 
 	void backward(double* W_next, double* b_next, double* delta_next, int verbose = 1) {
+		// error = W_next * delta_next + b_next * delta_next
+		// delta -> error . activation_derivative(a) . -> element wise multiplications [1, 2, 3] . [2, 2, 2] = [1*2, 2*2, 3*2]
+		// W -> W - learning_rate * a_prev.T * delta  -> [1, 2].T * [1, 2] = matrix
+		// b -> b - learning_rate * delta
 		//std::cout << std::endl << "BACKWARD PROPAGATION:" << std::endl;
 		// weight
 		double* W_nextT = transpoze(W_next);
@@ -191,7 +197,8 @@ double* Layer::transpoze(double* m) {
 class OutputLayer : public Layer {
 public:
 	void backward(double* y, int verbose = 1) {
-		// update bias
+		// error -> a - y									
+		// delta -> error_w* activation_derivative(a)	
 		
 		this->error = dll->subtract_vectors(this->a, y);
 		// weight
