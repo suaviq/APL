@@ -29,7 +29,7 @@ int main()
 		<< "verbosity:    " << verbosity << '\n';
 
 	auto start = high_resolution_clock::now();
-	test_layer(
+	run_network(
 		layers_count,
 		epochs_count,
 		dll_type == "asm" ? DllType::ASM : DllType::CPP,
@@ -37,7 +37,7 @@ int main()
 	);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
-	std::cout << "\n[INFO] Program took " << duration.count() << " microseconds\n";
+	std::cout << "\n[INFO] Program took " << duration.count() << " microseconds\n\n";
 
 	return EXIT_SUCCESS;
 }

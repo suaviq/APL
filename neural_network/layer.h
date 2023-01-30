@@ -64,10 +64,8 @@ public:
 		delete b;
 		delete z;
 		delete a;
-		if (!a_prev) delete a_prev;
 		delete delta;
 		delete error;
-		// delete learning_rate;
 	}
 
 	Layer(double lr, int wrapper_choice) {
@@ -250,7 +248,7 @@ public:
 };
 
 
-void test_layer(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
+void run_network(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
 	const int m = 4;
 	// const int epochs = 1;
 	// int verbose = 1; //bigger than 1 to print things
