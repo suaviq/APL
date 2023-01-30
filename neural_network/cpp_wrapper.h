@@ -64,11 +64,11 @@ public:
 
 CppWrapper::CppWrapper() {
 #if _DEBUG
-	auto _path = DEBUG_ASM_DLL_PATH;
-	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_ASM_DLL_PATH);
+	auto _path = DEBUG_CPP_DLL_PATH;
+	HINSTANCE hGetProcIDDLL = LoadLibrary(DEBUG_CPP_DLL_PATH);
 #else
-	auto _path = ASM_DLL_PATH;
-	HINSTANCE hGetProcIDDLL = LoadLibrary(ASM_DLL_PATH);
+	auto _path = CPP_DLL_PATH;
+	HINSTANCE hGetProcIDDLL = LoadLibrary(CPP_DLL_PATH);
 #endif
 	
 	// Check if DLL Exists
@@ -89,16 +89,6 @@ CppWrapper::CppWrapper() {
 		std::cerr << "[ERROR] could not locate the function `add_vectors_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	// _add_scalar_to_vector = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "add_scalar_to_vector_cpp");
-	// if (!_add_scalar_to_vector) {
-	// 	std::cerr << "[ERROR] could not locate the function `add_scalar_to_vector_cpp`" << std::endl;
-	// 	exit( EXIT_FAILURE );
-	// }
-	// _subtract_scalar_from_vector = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "subtract_scalar_from_vector_cpp");
-	// if (!_subtract_scalar_from_vector) {
-	// 	std::cerr << "[ERROR] could not locate the function `subtract_scalar_from_vector_cpp`" << std::endl;
-	// 	exit( EXIT_FAILURE );
-	// }
 	_mul_vector_by_scalar = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "multiply_vector_by_constant_cpp");
 	if (!_mul_vector_by_scalar) {
 		std::cerr << "[ERROR] could not locate the function `mul_vector_by_scalar_cpp`" << std::endl;
@@ -114,11 +104,6 @@ CppWrapper::CppWrapper() {
 		std::cerr << "[ERROR] could not locate the function `mul_vecT_by_vec_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
-	// _mul_vec_by_vecT = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "mul_vec_by_vecT_cpp");
-	// if (!_mul_vec_by_vecT) {
-	// 	std::cerr << "[ERROR] could not locate the function `mul_vec_by_vecT_cpp`" << std::endl;
-	// 	exit( EXIT_FAILURE );
-	// }
 	_relu_vec = (f_dll_f64x2)GetProcAddress(hGetProcIDDLL, "relu_vector_cpp");
 	if (!_relu_vec) {
 		std::cerr << "[ERROR] could not locate the function `relu_vec_cpp`" << std::endl;
@@ -164,9 +149,9 @@ inline double* CppWrapper::subtract_vectors(double* v1, double* v2) {
 	return ret;
 }
 
+// THIS IS UNUSED
 inline double* CppWrapper::add_scalar_to_vector(double* v, double* s) {
 	double* ret = new double[4] { 0.0 };
-	// _add_scalar_to_vector(s, v, ret);
 	return ret;
 }
 
