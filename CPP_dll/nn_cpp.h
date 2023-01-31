@@ -46,4 +46,4 @@ extern "C" nn_cpp
 void relu_vector_cpp(double* x, double* ret);
 
 extern "C" nn_cpp
-void derivative_relu_vector_cpp(double* x, double* ret);
+void derivative_relu_vector_cpp(double* x, double* _, double* ret);

@@ -249,20 +249,31 @@ public:
 
 
 void run_network(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
-	const int m = 4;
-	// const int epochs = 1;
-	// int verbose = 1; //bigger than 1 to print things
+	const int m = 16;
 	double learning_rate = 0.5;
-	// linear function y = 2x+1
-	double x_raw[m][4] = { 1.0, 2.0, 1.5, 3.3, 
-						1.0, 2.0, 1.5, 3.3,
-						2.0, 6.1, 9.5, 6.3,
-						2.0, 6.1, 9.5, 6.3 };
 
-	double y_raw[m][4] = { 3.0, 5.0, 4.0, 7.6,
-						3.0, 5.0, 4.0, 7.6,
-						5.0, 13.2, 20.0, 13.6,
-						5.0, 13.2, 20.0, 13.6 };
+	// linear function y = 2x+1
+	double x_raw[m][4] = {
+		{ 1.0, 2.0, 1.5, 3.3 },
+		{ 1.0, 2.0, 1.5, 3.3 },
+		{ 2.0, 6.1, 9.5, 6.3 },
+		{ 2.0, 6.1, 9.5, 6.3 },
+		{ 1.5, 2.5, 3.5, 4.5 },
+		{ 1.5, 2.5, 3.5, 4.5 },
+		{ 9.5, 8.5, 3.3, 1.9 },
+		{ 5.5, 6.6, 2.3, 1.3 },
+
+		{ 1.0, 2.0, 1.5, 3.3 },
+		{ 1.0, 2.0, 1.5, 3.3 },
+		{ 2.0, 6.1, 9.5, 6.3 },
+		{ 2.0, 6.1, 9.5, 6.3 },
+		{ 1.5, 2.5, 3.5, 4.5 },
+		{ 1.5, 2.5, 3.5, 4.5 },
+		{ 9.5, 8.5, 3.3, 1.9 },
+		{ 5.5, 6.6, 2.3, 1.3 },
+	};
+	double y_raw[m][4] = { 0.0 };
+
 	double** x = new double* [m];
 	double** y = new double* [m];
 
@@ -271,7 +282,9 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 		y[i] = new double[4];
 		for (int j = 0; j < 4; j++) {
 			x[i][j] = x_raw[i][j];
-			y[i][j] = y_raw[i][j];
+			y[i][j] = x_raw[i][j] * 2 + 1;
+			// previously:
+			// y[i][j] = y_raw[i][j];
 		}
 	}
 
@@ -284,10 +297,14 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 	if (verbose >= 0) std::cout << "---------------------------------  FIT  ------------------------------------" << std::endl;
 	for (unsigned int epoch = 0; epoch < epochs; ++epoch)
 	{
+		if (verbose >= 0) printf(
+			"> epoch: %d\n",
+			epoch+1
+		);
 		for (int i = 0; i < m; ++i)
 		{
 			double loss = 0;
-			// hidden_layers[0].forward(x[i], verbose);
+			hidden_layers[0].forward(x[i], verbose);
 			for (size_t i = 1; i < layers_count; ++i) {
 				hidden_layers[i].forward(hidden_layers[i-1].access_a(), verbose);
 			}
@@ -312,7 +329,10 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 
 			loss += get_loss(out_layer.access_delta())/(i+1);
 
-			if (verbose >= 0) std::cout << "epoch: " << epoch + 1 << "\tprogress: " << double(i + 1) / m * 100 << "%" << "\tloss: " << loss << std::endl;
+			if (verbose >= 0) printf(
+				"  > progress: % .1lf % %\n  > loss: % .1lf\n\n",
+				double(i+1)/m*100, loss
+			);
 		}
 	}
 
@@ -325,8 +345,10 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 			hidden_layers[i].forward(hidden_layers[i-1].access_a(), verbose);
 		}
 		out_layer.forward(hidden_layers[layers_count-1].access_a(), verbose);
-		if (verbose >= 0) cout_vector("y true", y[i]);
-		if (verbose >= 0) cout_vector("prediction", out_layer.access_a());
+		if (verbose >= 0) {
+			cout_vector("y true", y[i]);
+			cout_vector("prediction", out_layer.access_a());
+		}
 	}
 
 	// delete[] hidden_layers;

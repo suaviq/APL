@@ -104,7 +104,7 @@ void relu_vector_cpp(double* x, double* ret)
     }
 }
 
-void derivative_relu_vector_cpp(double* x, double* ret)
+void derivative_relu_vector_cpp(double* x, double* _, double* ret)
 {
     for (int i = 0; i < 4; i++) {
         if (x[i] < 0) {
