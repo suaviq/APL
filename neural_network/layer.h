@@ -246,36 +246,24 @@ public:
 	}
 };
 
-
+#define DATASET_ROWS 32
 void run_network(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
-	const int m = 16;
-	double learning_rate = 0.1;
+	const double learning_rate = 0.1;
+	double x_raw[DATASET_ROWS][4] = { 0.0 };
 
-	// linear function y = 2x+1
-	double x_raw[m][4] = {
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.33, 0.1, 0.2, 0.15 },
-		{ 0.15, 0.33,  0.1, 0.2 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.33, 0.1, 0.2, 0.15 },
-		{ 0.15, 0.33,  0.1, 0.2 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.33, 0.1, 0.2, 0.15 },
-		{ 0.15, 0.33,  0.1, 0.2 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-		{ 0.33, 0.1, 0.2, 0.15 },
-		{ 0.15, 0.33,  0.1, 0.2 },
-		{ 0.1, 0.2, 0.15, 0.33 },
-	};
-	double y_raw[m][4] = { 0.0 };
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(0.01, 0.33);
+	for (size_t i = 0; i < DATASET_ROWS; i += 1) {
+		for (size_t j = 0; j < 4; ++j) {
+			x_raw[i][j] = dis(gen);
+		}
+	}
 
-	double** x = new double*[m];
-	double** y = new double*[m];
+	double** x = new double*[DATASET_ROWS];
+	double** y = new double*[DATASET_ROWS];
 
-	for (int i = 0; i < m; i++) {
+	for (int i = 0; i < DATASET_ROWS; i++) {
 		x[i] = new double[4];
 		y[i] = new double[4];
 		for (int j = 0; j < 4; j++) {
@@ -297,7 +285,7 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 			"> epoch: %d\n",
 			epoch + 1
 		);
-		for (int i = 0; i < m; ++i)
+		for (int i = 0; i < DATASET_ROWS; ++i)
 		{
 			double loss = 0;
 			hidden_layers[0].forward(x[i], verbose);
@@ -326,15 +314,15 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 			loss += get_loss(out_layer.access_delta()) / (i + 1);
 
 			if (verbose >= 0) printf(
-				"  > progress: % .1lf % %\n  > loss: % .1lf\n\n",
-				double(i + 1) / m * 100, loss
+				"  > progress: %.1lf%%\n  > loss: %.1lf\n\n",
+				double(i + 1) / DATASET_ROWS * 100, loss
 			);
 		}
 	}
 
 	if (verbose >= 0) std::cout << "---------------------------------  PREDICT  --------------------------------" << std::endl;
 
-	for (int i = 0; i < m; ++i)
+	for (int i = 0; i < DATASET_ROWS; ++i)
 	{
 		hidden_layers[0].forward(x[i], verbose);
 		for (size_t i = 1; i < layers_count; ++i) {
@@ -344,6 +332,7 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 		if (verbose >= 0) {
 			cout_vector("y true", y[i]);
 			cout_vector("prediction", out_layer.access_a());
+			printf("\n");
 		}
 	}
 
