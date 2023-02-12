@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <stdlib.h>
+#include <stdio.h>
 
 void multiply_matrix_by_vector_cpp(double* matrix, double* vector, double* ret)
 {
@@ -14,19 +15,19 @@ void multiply_matrix_by_vector_cpp(double* matrix, double* vector, double* ret)
     }
 }
 
-void multiply_matrix_by_constant_cpp(double* matrix, double constant, double* ret)
+void multiply_matrix_by_constant_cpp(double* matrix, double* constant, double* ret)
 {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            ret[4*i+j] = constant + matrix[4*i+j];
+            ret[4*i+j] = *constant * matrix[4*i+j];
         }
     }
 }
 
-void multiply_vector_by_constant_cpp(double* vector, double constant, double* ret)
+void multiply_vector_by_constant_cpp(double* vector, double* constant, double* ret)
 {
     for (int i = 0; i < 4; i++) {
-        ret[i] = constant * vector[i];
+        ret[i] = *constant * vector[i];
     }
 }
 
@@ -48,10 +49,10 @@ void subtract_matrices_cpp(double* A, double* B, double* ret)
     }
 }
 
-void subtract_constant_from_vector_cpp(double constant, double* A, double* ret)
+void subtract_constant_from_vector_cpp(double* constant, double* A, double* ret)
 {
     for (int i = 0; i < 4; i++) {
-        ret[i] = A[i] - constant;
+        ret[i] = A[i] - *constant;
     }
 }
 
@@ -78,10 +79,10 @@ void multiply_vectorT_by_vector_cpp(double* vecT, double* vec, double* ret)
     }
 }
 
-void multiply_vectorT_by_constant_cpp(double* vecT, double constant, double* ret)
+void multiply_vectorT_by_constant_cpp(double* vecT, double* constant, double* ret)
 {
     for (int i = 0; i < 4; i++) {
-        ret[i] = vecT[i] * constant;
+        ret[i] = vecT[i] * *constant;
     }
 }
 

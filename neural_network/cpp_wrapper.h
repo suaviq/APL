@@ -91,27 +91,27 @@ CppWrapper::CppWrapper() {
 	}
 	_mul_vector_by_scalar = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "multiply_vector_by_constant_cpp");
 	if (!_mul_vector_by_scalar) {
-		std::cerr << "[ERROR] could not locate the function `mul_vector_by_scalar_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `multiply_vector_by_constant_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_vector_wise_multiply = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "element_wise_multiply_cpp");
 	if (!_vector_wise_multiply) {
-		std::cerr << "[ERROR] could not locate the function `vector_wise_multiply_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `element_wise_multiply_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_mul_vecT_by_vec = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "multiply_vectorT_by_vector_cpp");
 	if (!_mul_vecT_by_vec) {
-		std::cerr << "[ERROR] could not locate the function `mul_vecT_by_vec_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `multiply_vectorT_by_vector_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_relu_vec = (f_dll_f64x2)GetProcAddress(hGetProcIDDLL, "relu_vector_cpp");
 	if (!_relu_vec) {
-		std::cerr << "[ERROR] could not locate the function `relu_vec_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `relu_vector_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_derivative_relu_vec = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "derivative_relu_vector_cpp");
 	if (!_derivative_relu_vec) {
-		std::cerr << "[ERROR] could not locate the function `derivative_relu_vec_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `derivative_relu_vector_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_add_matrices = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "add_matrices_cpp");
@@ -126,12 +126,12 @@ CppWrapper::CppWrapper() {
 	}
 	_mul_matrix_by_scalar = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "multiply_matrix_by_constant_cpp");
 	if (!_mul_matrix_by_scalar) {
-		std::cerr << "[ERROR] could not locate the function `mul_matrix_by_scalar_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `multiply_matrix_by_constant_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 	_mul_matrix_by_vec = (f_dll_f64x3)GetProcAddress(hGetProcIDDLL, "multiply_matrix_by_vector_cpp");
 	if (!_mul_matrix_by_scalar) {
-		std::cerr << "[ERROR] could not locate the function `mul_matrix_by_scalar_cpp`" << std::endl;
+		std::cerr << "[ERROR] could not locate the function `multiply_matrix_by_vector_cpp`" << std::endl;
 		exit( EXIT_FAILURE );
 	}
 }
