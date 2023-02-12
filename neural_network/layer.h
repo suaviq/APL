@@ -165,10 +165,18 @@ public:
 };
 
 double* Layer::initialize_layer_weights() {
-	srand(time(0));
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	double* matrix = new double[16];
+	double low = 0;
 	for (size_t i = 0; i < 16; i += 1) {
+<<<<<<< HEAD
 		matrix[i] = double((rand() % 100)) / double(300);
+=======
+		low = int(i / 4) * 0.5;
+		std::uniform_real_distribution<> dis(low, low + 0.5);
+		matrix[i] = dis(gen) / 4000;
+>>>>>>> 8919e5089b8dabdd7a431eac4e6228effcff647a
 	}
 	return matrix;
 }
