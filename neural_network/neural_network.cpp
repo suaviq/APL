@@ -20,13 +20,13 @@ int main()
 	unsigned int layers_count, epochs_count;
 	int verbosity;
 
-	std::cout << "Provide number of layers, number of epochs, type of DLL [asm|cpp], and level of verbosity [-1|1|2]\n > ";
+	std::cout << "Provide number of layers, number of epochs, type of DLL [asm|cpp], and level of verbose [-1|1|2]\n > ";
 	std::cin >> layers_count >> epochs_count >> dll_type >> verbosity;
 	std::cout 
 		<< "layers_count: " << layers_count << '\n'
 		<< "epochs_count: " << epochs_count << '\n'
 		<< "dll_type:     " << dll_type << '\n'
-		<< "verbosity:    " << verbosity << '\n';
+		<< "verbose:    " << verbosity << '\n';
 
 	auto start = high_resolution_clock::now();
 	run_network(
