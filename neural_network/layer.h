@@ -168,7 +168,7 @@ double* Layer::initialize_layer_weights() {
 	srand(time(0));
 	double* matrix = new double[16];
 	for (size_t i = 0; i < 16; i += 1) {
-		matrix[i] = double((rand() % 100)) / double(300);
+		matrix[i] = double((rand()%100 )) / double(300);
 	}
 	return matrix;
 }
@@ -248,14 +248,15 @@ public:
 
 
 void run_network(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
-	const int m = 3;
-	double learning_rate = 0.5;
+	const int m = 4;
+	double learning_rate = 0.1;
 
 	// linear function y = 2x+1
 	double x_raw[m][4] = {
 		{ 0.1, 0.2, 0.15, 0.33 },
 		{ 0.33, 0.1, 0.2, 0.15, },
-		{0.15, 0.33,  0.1, 0.2,  }
+		{0.15, 0.33,  0.1, 0.2},
+		{ 0.1, 0.2, 0.15, 0.33}
 	};
 	double y_raw[m][4] = { 0.0 };
 
@@ -267,7 +268,7 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 		y[i] = new double[4];
 		for (int j = 0; j < 4; j++) {
 			x[i][j] = x_raw[i][j];
-			y[i][j] = x_raw[i][j] * 2+1;
+			y[i][j] = x_raw[i][j] * 5+1;
 			// previously:
 			// y[i][j] = y_raw[i][j];
 		}
@@ -332,7 +333,7 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 		out_layer.forward(hidden_layers[layers_count - 1].access_a(), verbose);
 		if (verbose >= 0) {
 			cout_vector("y true", y[i]);
-			cout_vector("prediction", out_layer.access_a()));
+			cout_vector("prediction", out_layer.access_a());
 		}
 	}
 
