@@ -2,9 +2,9 @@
 #include "asm_wrapper.h"
 #include "cpp_wrapper.h"
 #include "dll_wrapper.h"
-#include <string>
-#include <ctime>
 
+#include <string>
+#include <random>
 
 void cout_matrix(std::string name, double* M)
 {
@@ -165,10 +165,14 @@ public:
 };
 
 double* Layer::initialize_layer_weights() {
-	srand(time(0));
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	double* matrix = new double[16];
+	double low = 0;
 	for (size_t i = 0; i < 16; i += 1) {
-		matrix[i] = double((rand() % 100)) / double(10000);
+		low = int(i / 4) * 0.5;
+		std::uniform_real_distribution<> dis(low, low + 0.5);
+		matrix[i] = dis(gen) / 4000;
 	}
 	return matrix;
 }
