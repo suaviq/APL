@@ -248,7 +248,7 @@ public:
 
 
 void run_network(const unsigned int layers_count, const unsigned int epochs, const unsigned int dll_type, const int verbose) {
-	const int m = 4;
+	const int m = 16;
 	double learning_rate = 0.1;
 
 	// linear function y = 2x+1
@@ -256,7 +256,19 @@ void run_network(const unsigned int layers_count, const unsigned int epochs, con
 		{ 0.1, 0.2, 0.15, 0.33 },
 		{ 0.33, 0.1, 0.2, 0.15, },
 		{0.15, 0.33,  0.1, 0.2},
-		{ 0.1, 0.2, 0.15, 0.33}
+		{ 0.1, 0.2, 0.15, 0.33},
+		{ 0.1, 0.2, 0.15, 0.33 },
+		{ 0.33, 0.1, 0.2, 0.15, },
+		{0.15, 0.33,  0.1, 0.2},
+		{ 0.1, 0.2, 0.15, 0.33},
+		{ 0.1, 0.2, 0.15, 0.33 },
+		{ 0.33, 0.1, 0.2, 0.15, },
+		{0.15, 0.33,  0.1, 0.2},
+		{ 0.1, 0.2, 0.15, 0.33},
+		{ 0.1, 0.2, 0.15, 0.33 },
+		{ 0.33, 0.1, 0.2, 0.15, },
+		{0.15, 0.33,  0.1, 0.2},
+		{ 0.1, 0.2, 0.15, 0.33},
 	};
 	double y_raw[m][4] = { 0.0 };
 
